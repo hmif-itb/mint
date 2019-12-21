@@ -1,0 +1,33 @@
+{
+  "name": "mint",
+  "version": "1.0.0",
+  "description": "Mock interview guide website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmif-itb/mint.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hmif-itb/mint/issues"
+  },
+  "homepage": "https://github.com/hmif-itb/mint#readme",
+  "dependencies": {
+    "@material-ui/core": "^4.8.0",
+    "next": "^9.1.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.17",
+    "typescript": "^3.7.4"
+  }
+}
