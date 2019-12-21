@@ -22,7 +22,7 @@ export default class App extends React.Component<MyState> {
                 <Container maxWidth="xs">
                     <Box display="flex" flexDirection="column" justifyContent="center" style={{minHeight: '100vh'}} pt={3} pb={3}>
                         <Box>
-                            <Typography variant="h3" component="span" color="primary" className="font-black">
+                            <Typography variant="h3" component="span" color="primary" style={{fontWeight: 900}}>
                                 Mint
                             </Typography>
                             &nbsp; &nbsp;
