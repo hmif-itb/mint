@@ -11,7 +11,7 @@ type MyState = {
     count: number; // like this
 };
 
-export default class App extends React.Component<MyState> {
+export default class WelcomePage extends React.Component<MyState> {
     state: MyState = {
         // optional second annotation for better type inference
         count: 5
@@ -56,8 +56,8 @@ export default class App extends React.Component<MyState> {
                                 </Select>
                             </Box>
                         </Box>
-                        <Box mt={3}>
-                            <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}}>
+                        <Box mt={4}>
+                            <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation href="/confirm">
                                 Lanjut
                             </Button>
                         </Box>
