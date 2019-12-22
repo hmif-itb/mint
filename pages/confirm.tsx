@@ -36,7 +36,7 @@ export default class ConfirmPage extends React.Component {
                             <p>
                                 Yang terpenting, lakukan peran masing-masing, dan selamat bersenang-senang!
                             </p>
-                            <Box mt={2}>
+                            <Box mt={3}>
                                 <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation>
                                     Lanjut
                                     &nbsp;
