@@ -37,7 +37,7 @@ export default class ConfirmPage extends React.Component {
                                 Yang terpenting, lakukan peran masing-masing, dan selamat bersenang-senang!
                             </p>
                             <Box mt={3}>
-                                <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation>
+                                <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation href="/interview">
                                     Lanjut
                                     &nbsp;
                                     <ArrowForwardIcon fontSize="inherit" />
