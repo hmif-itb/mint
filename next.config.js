@@ -4,6 +4,7 @@ module.exports = {
     return {
       '/': { page: '/' },
       '/confirm': { page: '/confirm' },
+      '/interview': { page: '/interview' },
     };
   }
 };
