@@ -15,7 +15,7 @@ interface Step {
     content: string;
 }
 
-type MyState = {
+interface MyState {
     activeStep: number;
     steps: Step[];
 }

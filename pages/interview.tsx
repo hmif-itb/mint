@@ -6,15 +6,20 @@ import Grid from "@material-ui/core/Grid/Grid";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import InterviewStepper from "../components/InterviewStepper";
 
-type MyState = {
-    count: number; // like this
-};
+interface MyState {
+    timeElapsed: number; // like this
+}
 
-export default class WelcomePage extends React.Component<MyState> {
+interface MyProps {
+
+}
+
+export default class WelcomePage extends React.Component<MyProps, MyState> {
     state: MyState = {
         // optional second annotation for better type inference
-        count: 5
+        timeElapsed: 0
     };
+
     render() {
         return (
             <div>
@@ -34,7 +39,7 @@ export default class WelcomePage extends React.Component<MyState> {
                                 <div style={{color: "#545454"}}>Waktu</div>
                                 <Box mt={0}>
                                     <Typography variant="subtitle1" style={{fontWeight: 900}}>
-                                        01:22
+                                        { this.secondsToHms(this.state.timeElapsed) }
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -68,5 +73,21 @@ export default class WelcomePage extends React.Component<MyState> {
                 </Container>
             </div>
         );
+    }
+
+    componentDidMount() {
+        window.setInterval(() => {
+            this.setState({
+                timeElapsed: this.state.timeElapsed + 1
+            });
+        }, 1000);
+    }
+
+    secondsToHms(d: number): string {
+        const h = Math.floor(d / 3600);
+        const m = Math.floor(d % 3600 / 60);
+        const s = Math.floor(d % 3600 % 60);
+
+        return h > 0 ? `${('00'+h).slice(-2)}:${('00'+m).slice(-2)}:${('00'+s).slice(-2)}` : `${('00'+m).slice(-2)}:${('00'+s).slice(-2)}`
     }
 }
