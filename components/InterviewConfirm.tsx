@@ -6,8 +6,15 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
+import { InterviewSessionData } from "../src/types";
 
-export default class ConfirmPage extends React.Component {
+interface MyProps {
+    onBack: () => void;
+    onProceed: () => void;
+    interviewSessionData: InterviewSessionData;
+}
+
+export default class InterviewConfirm extends React.Component<MyProps> {
     render() {
         return (
             <div>
@@ -15,7 +22,7 @@ export default class ConfirmPage extends React.Component {
                     <Box display="flex" flexDirection="column" justifyContent="center" style={{minHeight: '100vh'}} pt={3} pb={3}>
                         <Box>
                             <Box ml={-2}>
-                                <IconButton aria-label="delete" size="medium" color="primary" href="/">
+                                <IconButton aria-label="delete" size="medium" color="primary" onClick={this.props.onBack}>
                                     <ArrowBackIcon fontSize="inherit" />
                                 </IconButton>
                             </Box>
@@ -23,7 +30,7 @@ export default class ConfirmPage extends React.Component {
                                 Sebelum kita mulai
                             </Typography>
                             <p>
-                                <b>Muhammad Aditya Hilmy</b> akan berperan sebagai pewawancara yang mewawancarai <b>Jofiandy Leonata Pratama</b> pada wawancara <b>Engineering Roles</b>.
+                                <b>Muhammad Aditya Hilmy</b> akan berperan sebagai pewawancara yang mewawancarai <b>Jofiandy Leonata Pratama</b> pada wawancara <b>{ this.props.interviewSessionData.interview.title }</b>.
                             </p>
                             <p>
                                 Sebelum memulai wawancara, lihat terlebih dahulu resume/CV milik Jofiandy Leonata Pratama.
@@ -37,7 +44,7 @@ export default class ConfirmPage extends React.Component {
                                 Yang terpenting, lakukan peran masing-masing, dan selamat bersenang-senang!
                             </p>
                             <Box mt={3}>
-                                <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation href="/interview">
+                                <Button variant="contained" color="primary" style={{width: '100%', textTransform: 'none'}} disableElevation onClick={this.props.onProceed}>
                                     Lanjut
                                     &nbsp;
                                     <ArrowForwardIcon fontSize="inherit" />

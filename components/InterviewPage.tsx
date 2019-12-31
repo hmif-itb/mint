@@ -5,22 +5,30 @@ import Box from "@material-ui/core/Box/Box";
 import Grid from "@material-ui/core/Grid/Grid";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import InterviewStepper from "../components/InterviewStepper";
+import { InterviewSessionData } from "../src/types";
+import StopIcon from "@material-ui/icons/StopRounded";
+import PauseIcon from "@material-ui/icons/PauseRounded";
+import PlayIcon from "@material-ui/icons/PlayArrowRounded";
+import Button from "@material-ui/core/Button/Button";
 
 interface MyState {
-    timeElapsed: number; // like this
+    timeElapsed: number;
+    timerEnabled: boolean;
 }
 
 interface MyProps {
-
+    interviewSessionData: InterviewSessionData;
 }
 
-export default class WelcomePage extends React.Component<MyProps, MyState> {
+export default class InterviewPage extends React.Component<MyProps, MyState> {
     state: MyState = {
         // optional second annotation for better type inference
-        timeElapsed: 0
+        timeElapsed: 0,
+        timerEnabled: true
     };
 
     render() {
+        const interview = this.props.interviewSessionData.interview;
         return (
             <div>
                 <Container maxWidth="md">
@@ -32,6 +40,38 @@ export default class WelcomePage extends React.Component<MyProps, MyState> {
                         <Typography variant="h5" component="span" color="primary">
                             by HMIF Tech
                         </Typography>
+                    </Box>
+                    <Box mt={3}>
+                        <Button
+                            disableElevation
+                            variant="contained"
+                            startIcon={<StopIcon />}
+                            style={{backgroundColor: '#ef5350', color: 'white', textTransform: 'none', fontWeight: 'bold'}}
+                        >
+                            Stop
+                        </Button>
+                        { this.state.timerEnabled && (
+                            <Button
+                                disableElevation
+                                variant="contained"
+                                startIcon={<PauseIcon />}
+                                style={{backgroundColor: '#ff7043', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
+                                onClick={() => this.setState({ timerEnabled: false })}
+                            >
+                                Pause
+                            </Button>
+                        )}
+                        { !this.state.timerEnabled && (
+                            <Button
+                                disableElevation
+                                variant="contained"
+                                startIcon={<PlayIcon />}
+                                style={{backgroundColor: '#1e88e5', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
+                                onClick={() => this.setState({ timerEnabled: true })}
+                            >
+                                Play
+                            </Button>
+                        )}
                     </Box>
                     <Box mt={4}>
                         <Grid container spacing={3}>
@@ -47,7 +87,7 @@ export default class WelcomePage extends React.Component<MyProps, MyState> {
                                 <div style={{color: "#545454"}}>Interview</div>
                                 <Box mt={0}>
                                     <Typography variant="subtitle1" style={{fontWeight: 900}}>
-                                        Software Engineering/Technical
+                                        { this.props.interviewSessionData.interview.title }
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -67,8 +107,8 @@ export default class WelcomePage extends React.Component<MyProps, MyState> {
                             </Grid>
                         </Grid>
                     </Box>
-                    <Box mt={3}>
-                        <InterviewStepper/>
+                    <Box mt={3} mb={4}>
+                        <InterviewStepper interviewSessionData={this.props.interviewSessionData} interviewPaused={!this.state.timerEnabled} />
                     </Box>
                 </Container>
             </div>
@@ -77,9 +117,11 @@ export default class WelcomePage extends React.Component<MyProps, MyState> {
 
     componentDidMount() {
         window.setInterval(() => {
-            this.setState({
-                timeElapsed: this.state.timeElapsed + 1
-            });
+            if (this.state.timerEnabled) {
+                this.setState({
+                    timeElapsed: this.state.timeElapsed + 1
+                });
+            }
         }, 1000);
     }
 
