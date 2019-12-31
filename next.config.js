@@ -6,5 +6,9 @@ module.exports = withCSS({
     return {
       '/': { page: '/' }
     };
-  }
+  },
+  env: {
+    contentBaseUrl: 'https://mint-content.hmif.tech',
+    nimJsonUrl: 'https://mint-content.hmif.tech/nim/nim.json'
+  },
 });

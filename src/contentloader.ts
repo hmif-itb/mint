@@ -48,4 +48,4 @@ export class ContentLoader {
     }
 }
 
-export const contentLoader = new ContentLoader("https://mint-content.hmif.tech");  // TODO use env
+export const contentLoader = new ContentLoader(process.env.contentBaseUrl || "");

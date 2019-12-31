@@ -11,20 +11,16 @@ import { withStyles } from '@material-ui/styles';
 import ReactMarkdown from "react-markdown";
 import {InterviewSessionData} from "../src/types";
 import Typography from "@material-ui/core/Typography/Typography";
-
-interface Step {
-    title: string;
-    content: string;
-}
+import { Section } from "../src/contentloader";
 
 interface MyState {
     activeStep: number;
-    steps: Step[];
 }
 
 interface MyProps extends WithStyles<typeof styles> {
     interviewSessionData: InterviewSessionData;
     interviewPaused: boolean;
+    onFinish: () => void;
 }
 
 const styles = (theme: Theme) =>
@@ -37,13 +33,7 @@ const styles = (theme: Theme) =>
 
 class InterviewStepper extends React.Component<MyProps, MyState> {
     state = {
-        activeStep: 0,
-        steps: []
-    };
-
-    buttonStyle = {
-        fontWeight: 600,
-        textTransform: 'none'
+        activeStep: 0
     };
 
     render() {
@@ -107,9 +97,9 @@ class InterviewStepper extends React.Component<MyProps, MyState> {
                                                 variant="contained"
                                                 disableElevation
                                                 color="primary"
-                                                onClick={this.handleNext}
+                                                onClick={ (this.state.activeStep !== sections.length - 1) ? this.handleNext : this.handleFinish }
                                             >
-                                                {this.state.activeStep === this.state.steps.length - 1 ? 'Finish' : 'Next'}
+                                                { (this.state.activeStep !== sections.length - 1) ? 'Next' : 'Finish' }
                                             </Button>
                                         </div>
                                     </Box>
@@ -123,12 +113,18 @@ class InterviewStepper extends React.Component<MyProps, MyState> {
     }
 
     handleNext = () => {
-        this.setState({ activeStep: this.state.activeStep + 1 });
+        const nextStep = this.state.activeStep + 1;
+        this.setState({ activeStep: nextStep });
     };
 
     handleBack = () => {
-        this.setState({ activeStep: this.state.activeStep - 1 });
+        const prevStep = this.state.activeStep - 1;
+        this.setState({ activeStep: prevStep });
     };
+
+    handleFinish = () => {
+        this.props.onFinish();
+    }
 }
 
 export default withStyles(styles)(InterviewStepper);

@@ -16,6 +16,7 @@ interface MyProps {
 
 export default class InterviewConfirm extends React.Component<MyProps> {
     render() {
+        const interviewSessionData = this.props.interviewSessionData;
         return (
             <div>
                 <Container maxWidth="xs">
@@ -30,10 +31,10 @@ export default class InterviewConfirm extends React.Component<MyProps> {
                                 Sebelum kita mulai
                             </Typography>
                             <p>
-                                <b>Muhammad Aditya Hilmy</b> akan berperan sebagai pewawancara yang mewawancarai <b>Jofiandy Leonata Pratama</b> pada wawancara <b>{ this.props.interviewSessionData.interview.title }</b>.
+                                <b>{ interviewSessionData.interviewerName || interviewSessionData.interviewerNim }</b> akan berperan sebagai pewawancara yang mewawancarai <b>{ interviewSessionData.intervieweeName || interviewSessionData.intervieweeNim }</b> pada wawancara <b>{ interviewSessionData.interview.title }</b>.
                             </p>
                             <p>
-                                Sebelum memulai wawancara, lihat terlebih dahulu resume/CV milik Jofiandy Leonata Pratama.
+                                Sebelum memulai wawancara, lihat terlebih dahulu resume/CV milik { interviewSessionData.intervieweeName || interviewSessionData.intervieweeNim }.
                             </p>
                             <p>
                                 <i>Mock interview</i> ini terdiri dari beberapa bagian, yang akan ditampilkan satu persatu.

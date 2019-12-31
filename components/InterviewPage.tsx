@@ -5,30 +5,64 @@ import Box from "@material-ui/core/Box/Box";
 import Grid from "@material-ui/core/Grid/Grid";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import InterviewStepper from "../components/InterviewStepper";
-import { InterviewSessionData } from "../src/types";
+import {InterviewSessionData, SessionSummary} from "../src/types";
 import StopIcon from "@material-ui/icons/StopRounded";
 import PauseIcon from "@material-ui/icons/PauseRounded";
 import PlayIcon from "@material-ui/icons/PlayArrowRounded";
 import Button from "@material-ui/core/Button/Button";
+import Dialog from "@material-ui/core/Dialog/Dialog";
+import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 
 interface MyState {
     timeElapsed: number;
     timerEnabled: boolean;
+    stopDialogOpen: boolean;
 }
 
 interface MyProps {
     interviewSessionData: InterviewSessionData;
+    onReset: () => void;
+    onFinish: (sessionSummary: SessionSummary) => void;
 }
 
 export default class InterviewPage extends React.Component<MyProps, MyState> {
     state: MyState = {
-        // optional second annotation for better type inference
         timeElapsed: 0,
-        timerEnabled: true
+        timerEnabled: true,
+        stopDialogOpen: false
     };
 
+    attemptStop() {
+        this.setState({ stopDialogOpen: true, timerEnabled: false });
+    }
+
+    confirmStop() {
+        this.props.onReset();
+    }
+
+    cancelStop() {
+        this.setState({ stopDialogOpen: false, timerEnabled: true })
+    }
+
+    handleFinish() {
+        const sessionSummary: SessionSummary = {
+            interviewer: this.props.interviewSessionData.interviewerNim,
+            interviewee: this.props.interviewSessionData.interviewerNim,
+            timeElapsed: this.state.timeElapsed,
+            interviewId: this.props.interviewSessionData.interview.id,
+            interviewTitle: this.props.interviewSessionData.interview.title,
+            sectionTuples: []   // TODO populate
+        };
+
+        this.props.onFinish(sessionSummary);
+    }
+
     render() {
-        const interview = this.props.interviewSessionData.interview;
+        const interviewSessionData = this.props.interviewSessionData;
+        const interview = interviewSessionData.interview;
         return (
             <div>
                 <Container maxWidth="md">
@@ -47,6 +81,7 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
                             variant="contained"
                             startIcon={<StopIcon />}
                             style={{backgroundColor: '#ef5350', color: 'white', textTransform: 'none', fontWeight: 'bold'}}
+                            onClick={() => this.attemptStop()}
                         >
                             Stop
                         </Button>
@@ -95,27 +130,52 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
                                 <div style={{color: "#545454"}}>Partisipan</div>
                                 <Box mt={0}>
                                     <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
-                                        Muhammad Aditya Hilmy
+                                        { interviewSessionData.interviewerName || interviewSessionData.interviewerNim }
                                     </Typography>
                                     &nbsp;
                                     <ArrowForward fontSize="inherit" />
                                     &nbsp;
                                     <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
-                                        Jofiandy Leonata Pratama
+                                        { interviewSessionData.intervieweeName || interviewSessionData.intervieweeNim }
                                     </Typography>
                                 </Box>
                             </Grid>
                         </Grid>
                     </Box>
                     <Box mt={3} mb={4}>
-                        <InterviewStepper interviewSessionData={this.props.interviewSessionData} interviewPaused={!this.state.timerEnabled} />
+                        <InterviewStepper
+                            onFinish={() => this.handleFinish()}
+                            interviewSessionData={this.props.interviewSessionData}
+                            interviewPaused={!this.state.timerEnabled} />
                     </Box>
                 </Container>
+                <Dialog
+                    open={this.state.stopDialogOpen}
+                    onClose={() => this.cancelStop()}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Sudahi sesi mock interview?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Kamu akan kembali ke layar utama, dan progressmu akan terhapus.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.cancelStop()} color="default">
+                            Tidak
+                        </Button>
+                        <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.confirmStop()} color="default" autoFocus>
+                            Ya
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }
 
     componentDidMount() {
+
         window.setInterval(() => {
             if (this.state.timerEnabled) {
                 this.setState({

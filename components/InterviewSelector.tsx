@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Button from "@material-ui/core/Button/Button";
 import { PacmanLoader } from "react-spinners";
 import { contentLoader, Interview } from "../src/contentloader";
+import { resolveNim } from "../src/nimresolver";
 import { InterviewSessionData } from "../src/types";
 
 interface MyState {
@@ -62,23 +63,33 @@ export default class InterviewSelector extends React.Component<MyProps, MyState>
             return;
         }
 
-        const finalInterview = this.finalizeInterviewSections(interview);
+        const finalInterview = this.randomizeInterviewSections(interview);
 
         this.setState({ loading: true });
-        contentLoader.loadInterview(finalInterview)
-            .then(interview => {
-                this.props.onProceed({
-                    interviewerNim: this.state.interviewerNim,
-                    intervieweeNim: this.state.intervieweeNim,
-                    interview
-                });
+        this.loadInterviewData(finalInterview)
+            .then(interviewSessionData => {
+                this.props.onProceed(interviewSessionData);
             })
             .catch(() => {
                 this.setState({ loading: false });
             });
     }
 
-    finalizeInterviewSections(interview: Interview) {
+    async loadInterviewData(interview: Interview): Promise<InterviewSessionData> {
+        const interviewerName = await resolveNim(this.state.interviewerNim);
+        const intervieweeName = await resolveNim(this.state.intervieweeNim);
+        const finalInterview = await contentLoader.loadInterview(interview);
+
+        return {
+            interviewerNim: this.state.interviewerNim,
+            intervieweeNim: this.state.intervieweeNim,
+            interviewerName,
+            intervieweeName,
+            interview: finalInterview
+        }
+    }
+
+    randomizeInterviewSections(interview: Interview) {
         const sections = interview.sections.map(section => {
             const pickedContent = section.contents[Math.floor(Math.random() * section.contents.length)]; // Pick random link
             section.contents = [pickedContent];
