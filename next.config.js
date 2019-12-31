@@ -4,9 +4,7 @@ module.exports = withCSS({
   exportTrailingSlash: true,
   exportPathMap: function() {
     return {
-      '/': { page: '/' },
-      '/confirm': { page: '/confirm' },
-      '/interview': { page: '/interview' },
+      '/': { page: '/' }
     };
   }
 });
