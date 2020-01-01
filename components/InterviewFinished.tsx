@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box/Box";
 import ReplayIcon from "@material-ui/icons/Replay";
 import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
-import {InterviewSessionData, SessionSummary} from "../src/types";
+import {InterviewSessionData, SessionSummary} from "../helpers/types";
 
 interface MyProps {
     onReset: () => void;

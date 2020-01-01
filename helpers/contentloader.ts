@@ -1,16 +1,5 @@
 import axios from 'axios';
-
-export interface Interview {
-    id: string;
-    title: string;
-    sections: Section[];
-}
-
-export interface Section {
-    title: string;
-    order: number;
-    contents: string[];
-}
+import { Interview, Section } from "./types";
 
 export class ContentLoader {
     contentBaseUrl: string;

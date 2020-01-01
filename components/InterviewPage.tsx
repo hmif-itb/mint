@@ -5,7 +5,7 @@ import Box from "@material-ui/core/Box/Box";
 import Grid from "@material-ui/core/Grid/Grid";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import InterviewStepper from "../components/InterviewStepper";
-import {InterviewSessionData, SessionSummary} from "../src/types";
+import {InterviewSessionData, SessionSummary} from "../helpers/types";
 import StopIcon from "@material-ui/icons/StopRounded";
 import PauseIcon from "@material-ui/icons/PauseRounded";
 import PlayIcon from "@material-ui/icons/PlayArrowRounded";

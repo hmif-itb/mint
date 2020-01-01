@@ -1,10 +1,9 @@
 import React from 'react';
-import { Interview } from "../src/contentloader";
 import InterviewSelector from "../components/InterviewSelector";
 import InterviewConfirm from "../components/InterviewConfirm";
 import InterviewPage from "../components/InterviewPage";
-import {InterviewSessionData, SessionSummary} from "../src/types";
-import * as eventLogger from "../src/eventlogger";
+import {Interview, InterviewSessionData, SessionSummary, Step} from "../helpers/types";
+import * as eventLogger from "../helpers/eventlogger";
 import InterviewFinished from "../components/InterviewFinished";
 
 interface MyState {
@@ -12,13 +11,6 @@ interface MyState {
     currentStep: Step;
     interviewSessionData?: InterviewSessionData;
     sessionSummary?: SessionSummary;
-}
-
-enum Step {
-    SELECT_INTERVIEW = 0,
-    CONFIRMATION = 1,
-    INTERVIEW = 2,
-    FINISHED = 3
 }
 
 export default class WelcomePage extends React.Component<MyState> {

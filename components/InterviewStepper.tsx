@@ -6,12 +6,11 @@ import Step from "@material-ui/core/Step/Step";
 import StepContent from "@material-ui/core/StepContent/StepContent";
 import Button from "@material-ui/core/Button/Button";
 import Box from "@material-ui/core/Box/Box";
-import { makeStyles, createStyles, Theme, WithStyles } from "@material-ui/core";
+import { createStyles, Theme, WithStyles } from "@material-ui/core";
 import { withStyles } from '@material-ui/styles';
 import ReactMarkdown from "react-markdown";
-import {InterviewSessionData} from "../src/types";
+import { InterviewSessionData, Section } from "../helpers/types";
 import Typography from "@material-ui/core/Typography/Typography";
-import { Section } from "../src/contentloader";
 
 interface MyState {
     activeStep: number;

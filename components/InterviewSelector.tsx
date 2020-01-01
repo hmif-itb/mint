@@ -7,9 +7,9 @@ import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Button from "@material-ui/core/Button/Button";
 import { PacmanLoader } from "react-spinners";
-import { contentLoader, Interview } from "../src/contentloader";
-import { resolveNim } from "../src/nimresolver";
-import { InterviewSessionData } from "../src/types";
+import { contentLoader } from "../helpers/contentloader";
+import { resolveNim } from "../helpers/nimresolver";
+import { Interview, InterviewSessionData } from "../helpers/types";
 
 interface MyState {
     interviews: Interview[];
