@@ -55,7 +55,7 @@ export default class InterviewerNote extends React.Component {
             }
             .DraftEditor-root {
               padding: 0 16px 0 16px;
-              max-height: calc(100vh - 64px);
+              max-height: calc(100vh - 48px);
               overflow-y: auto;
               border-top: 1px solid #00000011;
             }
