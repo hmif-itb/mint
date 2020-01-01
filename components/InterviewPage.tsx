@@ -17,13 +17,14 @@ import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import InputBase from "@material-ui/core/InputBase/InputBase";
+import InterviewerNote from './InterviewerNote';
 
 interface MyState {
     timeElapsed: number;
     timerEnabled: boolean;
     stopDialogOpen: boolean;
     notesOpen: boolean;
+    notesContent: string;
 }
 
 interface MyProps {
@@ -37,7 +38,8 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
         timeElapsed: 0,
         timerEnabled: true,
         stopDialogOpen: false,
-        notesOpen: true
+        notesOpen: true,
+        notesContent: ''
     };
 
     attemptStop() {
@@ -126,17 +128,6 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
                                             Show Note
                                         </Button>
                                     )}
-                                    { this.state.notesOpen && (
-                                        <Button
-                                            disableElevation
-                                            variant="contained"
-                                            startIcon={<NoteIcon />}
-                                            style={{backgroundColor: '#00bcd4', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
-                                            onClick={() => this.setState({ notesOpen: false })}
-                                        >
-                                            Hide Note
-                                        </Button>
-                                    )}
                                 </Hidden>
                             </Box>
                             <Box mt={4}>
@@ -205,25 +196,18 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
                 </Grid>
                 {this.state.notesOpen && <Hidden smDown>
                     <Grid item md={3} style={{
-                        backgroundColor: '#efefef',
+                        backgroundColor: '#fff8e1',
                         position: 'fixed',
                         height: '100vh',
-                        width: `${(3 / 12) * 100}%`,
+                        minWidth: `${(3 / 12) * 100}%`,
                         right: 0,
-                        overflowY: 'auto'
+                        borderLeft: '1px solid #00000011'
                     }}>
-                        <Box m={2}>
-                            <Typography variant="h6" style={{fontWeight: 'bold'}}>
-                                Interviewer's Note
-                            </Typography>
-                        </Box>
-                        <Box m={2}>
-                            <InputBase
-                                multiline
-                                fullWidth
-                                placeholder="Tulis catatan apa saja..."
-                            />
-                        </Box>
+                        <InterviewerNote
+                            value={this.state.notesContent}
+                            onChange={(notesContent: string) => this.setState({ notesContent })}
+                            onClose={() => this.setState({ notesOpen: false })}
+                        />
                     </Grid>
                 </Hidden>}
             </Grid>
