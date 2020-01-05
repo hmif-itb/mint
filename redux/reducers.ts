@@ -1,20 +1,24 @@
-import { InterviewSessionData, SessionSummary, Action as StateAction } from "../helpers/types";
-import {Action, AnyAction} from "redux";
+import { AnyAction } from 'redux';
+import {
+  InterviewStepperState,
+  StateAction,
+  defaultState,
+  IndexPageState,
+  InterviewPageState,
+  MintState
+} from './types';
 
-export interface SessionState {
-    interviewSessionData?: InterviewSessionData;
-    currentSection?: number;
-    sessionSummary?: SessionSummary;
-    interviewersNote?: string;
-}
-
-export default function(state: SessionState = {}, action: AnyAction): SessionState {
-    switch (action.type) {
-        case StateAction.SET_STATE:
-            return Object.assign({}, state, {
-                ...action.state
-            });
-        default:
-            return state
-    }
+export default function(state: MintState = defaultState, action: AnyAction): MintState {
+  switch (action.type) {
+    case StateAction.SET_INDEX_PAGE_STATE:
+      return { ...state, ...(action.state as IndexPageState) };
+    case StateAction.SET_INTERVIEW_PAGE_STATE:
+      return { ...state, ...(action.state as InterviewPageState) };
+    case StateAction.SET_INTERVIEW_STEPPER_STATE:
+      return { ...state, ...(action.state as InterviewStepperState) };
+    case StateAction.CLEAR_STATE:
+      return { ...state, ...defaultState };
+    default:
+      return state;
+  }
 }

@@ -1,48 +1,45 @@
 import React from 'react';
 
-import Stepper from "@material-ui/core/Stepper/Stepper";
-import StepLabel from "@material-ui/core/StepLabel/StepLabel";
-import Step from "@material-ui/core/Step/Step";
-import StepContent from "@material-ui/core/StepContent/StepContent";
-import Button from "@material-ui/core/Button/Button";
-import Box from "@material-ui/core/Box/Box";
-import { createStyles, Theme, WithStyles } from "@material-ui/core";
+import Stepper from '@material-ui/core/Stepper/Stepper';
+import StepLabel from '@material-ui/core/StepLabel/StepLabel';
+import Step from '@material-ui/core/Step/Step';
+import StepContent from '@material-ui/core/StepContent/StepContent';
+import Button from '@material-ui/core/Button/Button';
+import Box from '@material-ui/core/Box/Box';
+import { createStyles, Theme, WithStyles } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import ReactMarkdown from "react-markdown";
-import { InterviewSessionData, Section } from "../helpers/types";
-import Typography from "@material-ui/core/Typography/Typography";
+import ReactMarkdown from 'react-markdown';
+import Typography from '@material-ui/core/Typography/Typography';
+import { connect } from 'react-redux';
+import { InterviewSessionData } from '../helpers/types';
+import { InterviewStepperState, MintReduxComponent } from '../redux/types';
+import { setInterviewStepperState } from '../redux/actions';
 
-interface MyState {
-    activeStep: number;
+interface OwnProps extends WithStyles<typeof styles> {
+  interviewSessionData: InterviewSessionData;
+  interviewPaused: boolean;
+  onFinish: () => void;
 }
 
-interface MyProps extends WithStyles<typeof styles> {
-    interviewSessionData: InterviewSessionData;
-    interviewPaused: boolean;
-    onFinish: () => void;
-}
+type MyProps = OwnProps & MintReduxComponent<InterviewStepperState>;
 
 const styles = (theme: Theme) =>
-        createStyles({
-            button: {
-                fontWeight: 'bold',
-                textTransform: 'none'
-            }
-        });
+  createStyles({
+    button: {
+      fontWeight: 'bold',
+      textTransform: 'none'
+    }
+  });
 
-class InterviewStepper extends React.Component<MyProps, MyState> {
-    state = {
-        activeStep: 0
-    };
+class InterviewStepper extends React.Component<MyProps> {
+  render() {
+    const { classes, state } = this.props;
+    const { sections } = this.props.interviewSessionData.interview;
 
-    render() {
-        const { classes } = this.props;
-        const sections = this.props.interviewSessionData.interview.sections;
-
-        return (
-            <div>
-                <style>
-                    {`
+    return (
+      <div>
+        <style>
+          {`
                       blockquote {
                         margin-left: 0;
                         margin-top: -38px;
@@ -62,68 +59,72 @@ class InterviewStepper extends React.Component<MyProps, MyState> {
                           font-weight: 900;
                         }
                     `}
-                </style>
-                { this.props.interviewPaused && (
-                    <Box>
-                        <Typography component="h5">
-                            Interview paused.
-                        </Typography>
-                    </Box>
-                )}
+        </style>
+        {this.props.interviewPaused && (
+          <Box>
+            <Typography component="h5">Interview paused.</Typography>
+          </Box>
+        )}
 
-                { !this.props.interviewPaused && (
-                    <Stepper activeStep={this.state.activeStep} orientation="vertical" style={{padding: 0}}>
-                        {sections.map((step, i) => (
-                            <Step key={i}>
-                                <StepLabel><b>{step.title}</b></StepLabel>
-                                <StepContent style={{fontSize: '12pt'}}>
-                                    <Box>
-                                        <ReactMarkdown source={step.contents[0]} />
-                                    </Box>
-                                    <Box mt={3}>
-                                        <div>
-                                            <Button
-                                                className={classes.button}
-                                                variant="outlined"
-                                                disabled={this.state.activeStep === 0}
-                                                onClick={this.handleBack}
-                                            >
-                                                Back
-                                            </Button>
-                                            &nbsp; &nbsp;
-                                            <Button
-                                                className={classes.button}
-                                                variant="contained"
-                                                disableElevation
-                                                color="primary"
-                                                onClick={ (this.state.activeStep !== sections.length - 1) ? this.handleNext : this.handleFinish }
-                                            >
-                                                { (this.state.activeStep !== sections.length - 1) ? 'Next' : 'Finish' }
-                                            </Button>
-                                        </div>
-                                    </Box>
-                                </StepContent>
-                            </Step>
-                        ))}
-                    </Stepper>
-                )}
-            </div>
-        );
-    }
+        {!this.props.interviewPaused && (
+          <Stepper activeStep={state.activeStep} orientation="vertical" style={{ padding: 0 }}>
+            {sections.map((step, i) => (
+              <Step key={i}>
+                <StepLabel>
+                  <b>{step.title}</b>
+                </StepLabel>
+                <StepContent style={{ fontSize: '12pt' }}>
+                  <Box>
+                    <ReactMarkdown source={step.contents[0]} />
+                  </Box>
+                  <Box mt={3}>
+                    <div>
+                      <Button
+                        className={classes.button}
+                        variant="outlined"
+                        disabled={state.activeStep === 0}
+                        onClick={this.handleBack}
+                      >
+                        Back
+                      </Button>
+                      &nbsp; &nbsp;
+                      <Button
+                        className={classes.button}
+                        variant="contained"
+                        disableElevation
+                        color="primary"
+                        onClick={state.activeStep !== sections.length - 1 ? this.handleNext : this.handleFinish}
+                      >
+                        {state.activeStep !== sections.length - 1 ? 'Next' : 'Finish'}
+                      </Button>
+                    </div>
+                  </Box>
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+        )}
+      </div>
+    );
+  }
 
-    handleNext = () => {
-        const nextStep = this.state.activeStep + 1;
-        this.setState({ activeStep: nextStep });
-    };
+  handleNext = () => {
+    const nextStep = this.props.state.activeStep + 1;
+    this.setReduxState({ activeStep: nextStep });
+  };
 
-    handleBack = () => {
-        const prevStep = this.state.activeStep - 1;
-        this.setState({ activeStep: prevStep });
-    };
+  handleBack = () => {
+    const prevStep = this.props.state.activeStep - 1;
+    this.setReduxState({ activeStep: prevStep });
+  };
 
-    handleFinish = () => {
-        this.props.onFinish();
-    }
+  handleFinish = () => {
+    this.props.onFinish();
+  };
+
+  setReduxState(state: {}) {
+    this.props.dispatch(setInterviewStepperState({ ...this.props.state, ...state }));
+  }
 }
 
-export default withStyles(styles)(InterviewStepper);
+export default connect((state: InterviewStepperState) => ({ state }))(withStyles(styles)(InterviewStepper));

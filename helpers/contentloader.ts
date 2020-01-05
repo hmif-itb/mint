@@ -1,40 +1,41 @@
 import axios from 'axios';
-import { Interview, Section } from "./types";
+import { Interview, Section } from './types';
 
 export class ContentLoader {
-    contentBaseUrl: string;
-    interviews: { [interviewId: string]: Interview } = {};
+  contentBaseUrl: string;
 
-    constructor(contentBaseUrl: string) {
-        this.contentBaseUrl = contentBaseUrl;
-    }
+  interviews: { [interviewId: string]: Interview } = {};
 
-    async loadInterviews(): Promise<Interview[]> {
-        const response = await axios.get(`${this.contentBaseUrl}/interviews.json`);
-        const interviews = response.data as Interview[];
+  constructor(contentBaseUrl: string) {
+    this.contentBaseUrl = contentBaseUrl;
+  }
 
-        this.interviews = interviews.reduce(function(map: { [interviewId: string]: Interview }, interview: Interview) {
-            map[interview.id] = interview;
-            return map;
-        }, {});
+  async loadInterviews(): Promise<Interview[]> {
+    const response = await axios.get(`${this.contentBaseUrl}/interviews.json`);
+    const interviews = response.data as Interview[];
 
-        return interviews;
-    }
+    this.interviews = interviews.reduce((map: { [interviewId: string]: Interview }, interview: Interview) => {
+      map[interview.id] = interview;
+      return map;
+    }, {});
 
-    async loadInterview(interview: Interview): Promise<Interview> {
-        interview.sections = await Promise.all(interview.sections.map(section => this.loadSection(section)));
-        return interview;
-    }
+    return interviews;
+  }
 
-    async loadSection(section: Section): Promise<Section> {
-        section.contents = await Promise.all(section.contents.map(markdownUrl => this.loadContent(markdownUrl)));
-        return section;
-    }
+  async loadInterview(interview: Interview): Promise<Interview> {
+    interview.sections = await Promise.all(interview.sections.map((section) => this.loadSection(section)));
+    return interview;
+  }
 
-    async loadContent(markdownUrl: string): Promise<string> {
-        const response = await axios.get(`${this.contentBaseUrl}/${markdownUrl}`);
-        return response.data;
-    }
+  async loadSection(section: Section): Promise<Section> {
+    section.contents = await Promise.all(section.contents.map((markdownUrl) => this.loadContent(markdownUrl)));
+    return section;
+  }
+
+  async loadContent(markdownUrl: string): Promise<string> {
+    const response = await axios.get(`${this.contentBaseUrl}/${markdownUrl}`);
+    return response.data;
+  }
 }
 
-export const contentLoader = new ContentLoader(process.env.contentBaseUrl || "");
+export const contentLoader = new ContentLoader(process.env.contentBaseUrl || '');

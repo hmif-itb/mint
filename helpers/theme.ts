@@ -3,23 +3,23 @@ import { red } from '@material-ui/core/colors';
 
 // Create a theme instance.
 const theme = createMuiTheme({
-    typography: {
-        fontFamily: "'Nunito Sans', sans-serif",
+  typography: {
+    fontFamily: "'Nunito Sans', sans-serif"
+  },
+  palette: {
+    primary: {
+      main: '#FFC300'
     },
-    palette: {
-        primary: {
-            main: '#FFC300',
-        },
-        secondary: {
-            main: '#19857b',
-        },
-        error: {
-            main: red.A400,
-        },
-        background: {
-            default: '#fff',
-        },
+    secondary: {
+      main: '#19857b'
     },
+    error: {
+      main: red.A400
+    },
+    background: {
+      default: '#fff'
+    }
+  }
 });
 
 export default theme;

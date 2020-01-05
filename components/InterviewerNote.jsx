@@ -7,11 +7,11 @@ import { stateToHTML } from 'draft-js-export-html';
 import mediumDraftImporter from 'medium-draft/lib/importer';
 
 import NoSSR from 'react-no-ssr';
-import Box from "@material-ui/core/Box/Box";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import Toolbar from "@material-ui/core/Toolbar/Toolbar";
-import Typography from "@material-ui/core/Typography/Typography";
-import CloseIcon from "@material-ui/icons/Close";
+import Box from '@material-ui/core/Box/Box';
+import IconButton from '@material-ui/core/IconButton/IconButton';
+import Toolbar from '@material-ui/core/Toolbar/Toolbar';
+import Typography from '@material-ui/core/Typography/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 
 export default class InterviewerNote extends React.Component {
   constructor(props) {
@@ -32,7 +32,7 @@ export default class InterviewerNote extends React.Component {
   }
 
   static isContentActuallyEmpty(content) {
-    const tmp = document.createElement("div");
+    const tmp = document.createElement('div');
     tmp.innerHTML = content;
     return !tmp.innerText;
   }
@@ -46,9 +46,9 @@ export default class InterviewerNote extends React.Component {
   render() {
     const { editorState } = this.state;
     return (
-        <>
-          <style>
-            {`
+      <>
+        <style>
+          {`
             .md-RichEditor-root {
               background: none !important;
               padding: 0;
@@ -60,28 +60,31 @@ export default class InterviewerNote extends React.Component {
               border-top: 1px solid #00000011;
             }
             `}
-          </style>
-          <Toolbar variant="dense" disableElevation style={{paddingLeft: '16px', paddingRight: '16px'}}>
-            <Typography variant="h6" color="inherit" style={{fontWeight: 'bold'}}>
-              Interviewer's Note
-            </Typography>
-            <Box style={{flexGrow: 1}} />
-            <Box mr={-2}>
-              <IconButton onClick={() => this.handleClose()}>
-                <CloseIcon/>
-              </IconButton>
-            </Box>
-          </Toolbar>
-          <NoSSR>
-            <Editor
-                style={{padding: '8px', backgroundColor: 'transparent'}}
-                ref={this.refsEditor}
-                editorState={editorState}
-                onChange={(editorState) => this.onChange(editorState)}
-                sideButtons={[]}
-            />
-          </NoSSR>
-        </>
+        </style>
+        <Toolbar variant="dense" style={{ paddingLeft: '16px', paddingRight: '16px' }}>
+          <Typography variant="h6" color="inherit" style={{ fontWeight: 'bold' }}>
+            Interviewer's Note
+          </Typography>
+          <Box style={{ flexGrow: 1 }} />
+          <Box mr={-2}>
+            <IconButton onClick={() => this.handleClose()}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Toolbar>
+        <NoSSR>
+          <Editor
+            style={{
+              padding: '8px',
+              backgroundColor: 'transparent'
+            }}
+            ref={this.refsEditor}
+            editorState={editorState}
+            onChange={(editorState) => this.onChange(editorState)}
+            sideButtons={[]}
+          />
+        </NoSSR>
+      </>
     );
   }
 }
