@@ -9,17 +9,22 @@ import {InterviewSessionData, SessionSummary} from "../helpers/types";
 import StopIcon from "@material-ui/icons/StopRounded";
 import PauseIcon from "@material-ui/icons/PauseRounded";
 import PlayIcon from "@material-ui/icons/PlayArrowRounded";
+import NoteIcon from "@material-ui/icons/Note";
 import Button from "@material-ui/core/Button/Button";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import Hidden from "@material-ui/core/Hidden/Hidden";
+import InterviewerNote from './InterviewerNote';
 
 interface MyState {
     timeElapsed: number;
     timerEnabled: boolean;
     stopDialogOpen: boolean;
+    notesOpen: boolean;
+    notesContent: string;
 }
 
 interface MyProps {
@@ -32,7 +37,9 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
     state: MyState = {
         timeElapsed: 0,
         timerEnabled: true,
-        stopDialogOpen: false
+        stopDialogOpen: false,
+        notesOpen: true,
+        notesContent: ''
     };
 
     attemptStop() {
@@ -64,113 +71,146 @@ export default class InterviewPage extends React.Component<MyProps, MyState> {
         const interviewSessionData = this.props.interviewSessionData;
         const interview = interviewSessionData.interview;
         return (
-            <div>
-                <Container maxWidth="md">
-                    <Box mt={3}>
-                        <Typography variant="h3" component="span" color="primary" style={{fontWeight: 900}}>
-                            Mint
-                        </Typography>
-                        &nbsp; &nbsp;
-                        <Typography variant="h5" component="span" color="primary">
-                            by HMIF Tech
-                        </Typography>
-                    </Box>
-                    <Box mt={3}>
-                        <Button
-                            disableElevation
-                            variant="contained"
-                            startIcon={<StopIcon />}
-                            style={{backgroundColor: '#ef5350', color: 'white', textTransform: 'none', fontWeight: 'bold'}}
-                            onClick={() => this.attemptStop()}
+            <Grid container spacing={0}>
+                <Grid item xs={12} md={this.state.notesOpen ? 9 : 12}>
+                    <div>
+                        <Container maxWidth="md">
+                            <Box mt={3}>
+                                <Typography variant="h3" component="span" color="primary" style={{fontWeight: 900}}>
+                                    Mint
+                                </Typography>
+                                &nbsp; &nbsp;
+                                <Typography variant="h5" component="span" color="primary">
+                                    by HMIF Tech
+                                </Typography>
+                            </Box>
+                            <Box mt={3}>
+                                <Button
+                                    disableElevation
+                                    variant="contained"
+                                    startIcon={<StopIcon />}
+                                    style={{backgroundColor: '#ef5350', color: 'white', textTransform: 'none', fontWeight: 'bold'}}
+                                    onClick={() => this.attemptStop()}
+                                >
+                                    Stop
+                                </Button>
+                                { this.state.timerEnabled && (
+                                    <Button
+                                        disableElevation
+                                        variant="contained"
+                                        startIcon={<PauseIcon />}
+                                        style={{backgroundColor: '#ff7043', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
+                                        onClick={() => this.setState({ timerEnabled: false })}
+                                    >
+                                        Pause
+                                    </Button>
+                                )}
+                                { !this.state.timerEnabled && (
+                                    <Button
+                                        disableElevation
+                                        variant="contained"
+                                        startIcon={<PlayIcon />}
+                                        style={{backgroundColor: '#1e88e5', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
+                                        onClick={() => this.setState({ timerEnabled: true })}
+                                    >
+                                        Play
+                                    </Button>
+                                )}
+                                <Hidden smDown>
+                                    { !this.state.notesOpen && (
+                                        <Button
+                                            disableElevation
+                                            variant="contained"
+                                            startIcon={<NoteIcon />}
+                                            style={{backgroundColor: '#00bcd4', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
+                                            onClick={() => this.setState({ notesOpen: true })}
+                                        >
+                                            Show Note
+                                        </Button>
+                                    )}
+                                </Hidden>
+                            </Box>
+                            <Box mt={4}>
+                                <Grid container spacing={3}>
+                                    <Grid item>
+                                        <div style={{color: "#545454"}}>Waktu</div>
+                                        <Box mt={0}>
+                                            <Typography variant="subtitle1" style={{fontWeight: 900}}>
+                                                { this.secondsToHms(this.state.timeElapsed) }
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item>
+                                        <div style={{color: "#545454"}}>Interview</div>
+                                        <Box mt={0}>
+                                            <Typography variant="subtitle1" style={{fontWeight: 900}}>
+                                                { this.props.interviewSessionData.interview.title }
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item>
+                                        <div style={{color: "#545454"}}>Partisipan</div>
+                                        <Box mt={0}>
+                                            <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
+                                                { interviewSessionData.interviewerName || interviewSessionData.interviewerNim }
+                                            </Typography>
+                                            &nbsp;
+                                            <ArrowForward fontSize="inherit" />
+                                            &nbsp;
+                                            <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
+                                                { interviewSessionData.intervieweeName || interviewSessionData.intervieweeNim }
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            <Box mt={3} mb={4}>
+                                <InterviewStepper
+                                    onFinish={() => this.handleFinish()}
+                                    interviewSessionData={this.props.interviewSessionData}
+                                    interviewPaused={!this.state.timerEnabled} />
+                            </Box>
+                        </Container>
+                        <Dialog
+                            open={this.state.stopDialogOpen}
+                            onClose={() => this.cancelStop()}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
                         >
-                            Stop
-                        </Button>
-                        { this.state.timerEnabled && (
-                            <Button
-                                disableElevation
-                                variant="contained"
-                                startIcon={<PauseIcon />}
-                                style={{backgroundColor: '#ff7043', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
-                                onClick={() => this.setState({ timerEnabled: false })}
-                            >
-                                Pause
-                            </Button>
-                        )}
-                        { !this.state.timerEnabled && (
-                            <Button
-                                disableElevation
-                                variant="contained"
-                                startIcon={<PlayIcon />}
-                                style={{backgroundColor: '#1e88e5', color: 'white', textTransform: 'none', fontWeight: 'bold', marginLeft: '8px'}}
-                                onClick={() => this.setState({ timerEnabled: true })}
-                            >
-                                Play
-                            </Button>
-                        )}
-                    </Box>
-                    <Box mt={4}>
-                        <Grid container spacing={3}>
-                            <Grid item>
-                                <div style={{color: "#545454"}}>Waktu</div>
-                                <Box mt={0}>
-                                    <Typography variant="subtitle1" style={{fontWeight: 900}}>
-                                        { this.secondsToHms(this.state.timeElapsed) }
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <div style={{color: "#545454"}}>Interview</div>
-                                <Box mt={0}>
-                                    <Typography variant="subtitle1" style={{fontWeight: 900}}>
-                                        { this.props.interviewSessionData.interview.title }
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <div style={{color: "#545454"}}>Partisipan</div>
-                                <Box mt={0}>
-                                    <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
-                                        { interviewSessionData.interviewerName || interviewSessionData.interviewerNim }
-                                    </Typography>
-                                    &nbsp;
-                                    <ArrowForward fontSize="inherit" />
-                                    &nbsp;
-                                    <Typography variant="subtitle1" component="span" style={{fontWeight: 900}}>
-                                        { interviewSessionData.intervieweeName || interviewSessionData.intervieweeNim }
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    <Box mt={3} mb={4}>
-                        <InterviewStepper
-                            onFinish={() => this.handleFinish()}
-                            interviewSessionData={this.props.interviewSessionData}
-                            interviewPaused={!this.state.timerEnabled} />
-                    </Box>
-                </Container>
-                <Dialog
-                    open={this.state.stopDialogOpen}
-                    onClose={() => this.cancelStop()}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">Sudahi sesi mock interview?</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Kamu akan kembali ke layar utama, dan progressmu akan terhapus.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.cancelStop()} color="default">
-                            Tidak
-                        </Button>
-                        <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.confirmStop()} color="default" autoFocus>
-                            Ya
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+                            <DialogTitle id="alert-dialog-title">Sudahi sesi mock interview?</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    Kamu akan kembali ke layar utama, dan progressmu akan terhapus.
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.cancelStop()} color="default">
+                                    Tidak
+                                </Button>
+                                <Button style={{fontWeight: 'bold', textTransform: 'none'}} onClick={() => this.confirmStop()} color="default" autoFocus>
+                                    Ya
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                </Grid>
+                {this.state.notesOpen && <Hidden smDown>
+                    <Grid item md={3} style={{
+                        backgroundColor: '#fff8e1',
+                        position: 'fixed',
+                        height: '100vh',
+                        minWidth: `${(3 / 12) * 100}%`,
+                        right: 0,
+                        borderLeft: '1px solid #00000011'
+                    }}>
+                        <InterviewerNote
+                            value={this.state.notesContent}
+                            onChange={(notesContent: string) => this.setState({ notesContent })}
+                            onClose={() => this.setState({ notesOpen: false })}
+                        />
+                    </Grid>
+                </Hidden>}
+            </Grid>
         );
     }
 
