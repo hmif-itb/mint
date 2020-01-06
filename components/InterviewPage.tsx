@@ -17,8 +17,8 @@ import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import Hidden from '@material-ui/core/Hidden/Hidden';
 import { connect } from 'react-redux';
 import InterviewerNote from './InterviewerNote';
-import { setInterviewPageState } from '../redux/actions';
-import { InterviewPageState, InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
+import { setInterviewPageState, usageLoggingSetTimeElapsed } from '../redux/actions';
+import { InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
 import { SessionSummary } from '../helpers/types';
 import InterviewStepper from './InterviewStepper';
 
@@ -104,6 +104,19 @@ class InterviewPage extends React.Component<MyProps> {
     return h > 0
       ? `${`00${h}`.slice(-2)}:${`00${m}`.slice(-2)}:${`00${s}`.slice(-2)}`
       : `${`00${m}`.slice(-2)}:${`00${s}`.slice(-2)}`;
+  }
+
+  handleStepChange(activeStep: number) {
+    const currentActiveStep = this.interviewPageState.activeStep;
+
+    const { dispatch, interviewSessionData, state } = this.props;
+    const orderNumber = interviewSessionData.interview.sections[currentActiveStep].order;
+    const prevTimeElapsed = state.usageLogging.sectionCumulativeTime[orderNumber] || 0;
+    const timeDifference = this.interviewPageState.timeElapsed - this.interviewPageState.lastStepChangeTimestamp;
+    const timeElapsed = prevTimeElapsed + timeDifference;
+
+    dispatch(usageLoggingSetTimeElapsed(orderNumber, timeElapsed));
+    this.setReduxState({ activeStep, lastStepChangeTimestamp: this.interviewPageState.timeElapsed });
   }
 
   render() {
@@ -236,6 +249,8 @@ class InterviewPage extends React.Component<MyProps> {
                   onFinish={() => this.handleFinish()}
                   interviewSessionData={this.props.interviewSessionData}
                   interviewPaused={!reduxState.timerEnabled}
+                  activeStep={reduxState.activeStep}
+                  onStepChange={(step: number) => this.handleStepChange(step)}
                 />
               </Box>
             </Container>

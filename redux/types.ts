@@ -33,6 +33,7 @@ export enum StateAction {
   SET_INTERVIEW_PAGE_STATE = 'setInterviewPageState',
   SET_INTERVIEW_STEPPER_STATE = 'setInterviewStepperState',
   SET_USAGE_LOGGING_STATE = 'setUsageLoggingState',
+  USAGE_LOGGING_SET_TIME_ELAPSED = 'usageLoggingSetTimeElapsed',
   CLEAR_STATE = 'clearState'
 }
 
@@ -49,10 +50,8 @@ export interface InterviewPageState {
   notesContent: string;
   timerEnabled: boolean;
   stopDialogOpen: boolean;
-}
-
-export interface InterviewStepperState {
   activeStep: number;
+  lastStepChangeTimestamp: number;
 }
 
 export interface LogEntry {
@@ -66,7 +65,7 @@ export interface UsageLoggingState {
   beginTime?: number;
   endTime?: number;
   logs: LogEntry[];
-  sectionCumulativeTime: { [order: number]: { duration: number } };
+  sectionCumulativeTime: { [order: number]: number };
 }
 
 export const defaultIndexPageState: IndexPageState = {
@@ -79,11 +78,9 @@ export const defaultInterviewPageState: InterviewPageState = {
   notesOpen: true,
   notesContent: '',
   timerEnabled: true,
-  stopDialogOpen: false
-};
-
-export const defaultInterviewStepperState: InterviewStepperState = {
-  activeStep: 0
+  stopDialogOpen: false,
+  activeStep: 0,
+  lastStepChangeTimestamp: 0
 };
 
 export const defaultUsageLoggingState: UsageLoggingState = {
@@ -94,14 +91,12 @@ export const defaultUsageLoggingState: UsageLoggingState = {
 export const defaultState: MintState = {
   indexPage: defaultIndexPageState,
   interviewPage: defaultInterviewPageState,
-  interviewStepper: defaultInterviewStepperState,
   usageLogging: defaultUsageLoggingState
 };
 
 export interface MintState {
   indexPage: IndexPageState;
   interviewPage: InterviewPageState;
-  interviewStepper: InterviewStepperState;
   usageLogging: UsageLoggingState;
 }
 

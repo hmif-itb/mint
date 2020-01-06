@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux';
-import { IndexPageState, InterviewPageState, InterviewStepperState, StateAction, UsageLoggingState } from './types';
+import { IndexPageState, InterviewPageState, StateAction, UsageLoggingState } from './types';
 
 export function setIndexPageState(state: IndexPageState): AnyAction {
   return {
@@ -15,17 +15,18 @@ export function setInterviewPageState(state: InterviewPageState): AnyAction {
   };
 }
 
-export function setInterviewStepperState(state: InterviewStepperState): AnyAction {
-  return {
-    type: StateAction.SET_INTERVIEW_STEPPER_STATE,
-    state
-  };
-}
-
 export function setUsageLoggingState(state: UsageLoggingState): AnyAction {
   return {
     type: StateAction.SET_USAGE_LOGGING_STATE,
     state
+  };
+}
+
+export function usageLoggingSetTimeElapsed(order: number, timeElapsed: number): AnyAction {
+  return {
+    type: StateAction.USAGE_LOGGING_SET_TIME_ELAPSED,
+    order,
+    timeElapsed
   };
 }
 

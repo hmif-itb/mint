@@ -11,13 +11,14 @@ import { withStyles } from '@material-ui/styles';
 import ReactMarkdown from 'react-markdown';
 import Typography from '@material-ui/core/Typography/Typography';
 import { connect } from 'react-redux';
-import { InterviewSessionData, InterviewStepperState, MintReduxComponent, MintState } from '../redux/types';
-import { setInterviewStepperState } from '../redux/actions';
+import { InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
 
 interface OwnProps extends WithStyles<typeof styles> {
   interviewSessionData: InterviewSessionData;
   interviewPaused: boolean;
   onFinish: () => void;
+  onStepChange: (step: number) => void;
+  activeStep: number;
 }
 
 type MyProps = OwnProps & MintReduxComponent;
@@ -35,15 +36,9 @@ class InterviewStepper extends React.Component<MyProps> {
     super(props);
   }
 
-  get interviewStepperState() {
-    return this.props.state.interviewStepper;
-  }
-
   render() {
-    const { classes } = this.props;
+    const { classes, activeStep } = this.props;
     const { sections } = this.props.interviewSessionData.interview;
-
-    const state = this.interviewStepperState;
 
     return (
       <div>
@@ -76,7 +71,7 @@ class InterviewStepper extends React.Component<MyProps> {
         )}
 
         {!this.props.interviewPaused && (
-          <Stepper activeStep={state.activeStep} orientation="vertical" style={{ padding: 0 }}>
+          <Stepper activeStep={activeStep} orientation="vertical" style={{ padding: 0 }}>
             {sections.map((step, i) => (
               <Step key={i}>
                 <StepLabel>
@@ -91,7 +86,7 @@ class InterviewStepper extends React.Component<MyProps> {
                       <Button
                         className={classes.button}
                         variant="outlined"
-                        disabled={state.activeStep === 0}
+                        disabled={activeStep === 0}
                         onClick={this.handleBack}
                       >
                         Back
@@ -102,9 +97,9 @@ class InterviewStepper extends React.Component<MyProps> {
                         variant="contained"
                         disableElevation
                         color="primary"
-                        onClick={state.activeStep !== sections.length - 1 ? this.handleNext : this.handleFinish}
+                        onClick={activeStep !== sections.length - 1 ? this.handleNext : this.handleFinish}
                       >
-                        {state.activeStep !== sections.length - 1 ? 'Next' : 'Finish'}
+                        {activeStep !== sections.length - 1 ? 'Next' : 'Finish'}
                       </Button>
                     </div>
                   </Box>
@@ -118,22 +113,18 @@ class InterviewStepper extends React.Component<MyProps> {
   }
 
   handleNext = () => {
-    const nextStep = this.interviewStepperState.activeStep + 1;
-    this.setReduxState({ activeStep: nextStep });
+    const nextStep = this.props.activeStep + 1;
+    this.props.onStepChange(nextStep);
   };
 
   handleBack = () => {
-    const prevStep = this.interviewStepperState.activeStep - 1;
-    this.setReduxState({ activeStep: prevStep });
+    const prevStep = this.props.activeStep - 1;
+    this.props.onStepChange(prevStep);
   };
 
   handleFinish = () => {
     this.props.onFinish();
   };
-
-  setReduxState(state: {}) {
-    this.props.dispatch(setInterviewStepperState({ ...this.interviewStepperState, ...state }));
-  }
 }
 
 export default connect((state: MintState) => ({ state }))(withStyles(styles)(InterviewStepper));
