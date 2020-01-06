@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Interview, Section } from './types';
+import { Interview, Section } from '../redux/types';
 
 export class ContentLoader {
   contentBaseUrl: string;

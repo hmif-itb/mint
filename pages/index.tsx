@@ -3,15 +3,23 @@ import { connect } from 'react-redux';
 import InterviewSelector from '../components/InterviewSelector';
 import InterviewConfirm from '../components/InterviewConfirm';
 import InterviewPage from '../components/InterviewPage';
-import { InterviewSessionData, SessionSummary, Step } from '../helpers/types';
+import { SessionSummary } from '../helpers/types';
 import * as eventLogger from '../helpers/eventlogger';
 import InterviewFinished from '../components/InterviewFinished';
-import { IndexPageState, MintReduxComponent } from '../redux/types';
+import { InterviewSessionData, MintReduxComponent, MintState, Step } from '../redux/types';
 import { clearState, setIndexPageState } from '../redux/actions';
 
-class WelcomePage extends React.Component<MintReduxComponent<IndexPageState>> {
+class WelcomePage extends React.Component<MintReduxComponent> {
+  constructor(props: MintReduxComponent) {
+    super(props);
+  }
+
+  get indexPageState() {
+    return this.props.state.indexPage;
+  }
+
   render() {
-    const { state } = this.props;
+    const state = this.indexPageState;
 
     return (
       <>
@@ -47,11 +55,11 @@ class WelcomePage extends React.Component<MintReduxComponent<IndexPageState>> {
   }
 
   setReduxState(state: {}) {
-    this.props.dispatch(setIndexPageState({ ...this.props.state, ...state }));
+    this.props.dispatch(setIndexPageState({ ...this.indexPageState, ...state }));
   }
 
   goBack() {
-    switch (this.props.state.currentStep) {
+    switch (this.indexPageState.currentStep) {
       case Step.CONFIRMATION:
         this.setReduxState({ currentStep: Step.SELECT_INTERVIEW });
         break;
@@ -62,7 +70,7 @@ class WelcomePage extends React.Component<MintReduxComponent<IndexPageState>> {
   }
 
   goNext() {
-    switch (this.props.state.currentStep) {
+    switch (this.indexPageState.currentStep) {
       case Step.SELECT_INTERVIEW:
         this.setReduxState({ currentStep: Step.CONFIRMATION });
         break;
@@ -98,4 +106,4 @@ class WelcomePage extends React.Component<MintReduxComponent<IndexPageState>> {
   }
 }
 
-export default connect((state: IndexPageState) => ({ state }))(WelcomePage);
+export default connect((state: MintState) => ({ state }))(WelcomePage);

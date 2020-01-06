@@ -10,8 +10,7 @@ import Button from '@material-ui/core/Button/Button';
 import { PacmanLoader } from 'react-spinners';
 import { contentLoader } from '../helpers/contentloader';
 import { resolveNim } from '../helpers/nimresolver';
-import { Interview, InterviewSessionData } from '../helpers/types';
-import { MintReduxComponent, MintState } from '../redux/types';
+import { MintReduxComponent, MintState, Interview, InterviewSessionData } from '../redux/types';
 import VerticalCenter from './VerticalCenter';
 
 interface MyState {

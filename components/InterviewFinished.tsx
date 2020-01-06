@@ -4,8 +4,9 @@ import Box from '@material-ui/core/Box/Box';
 import ReplayIcon from '@material-ui/icons/Replay';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
-import { InterviewSessionData, SessionSummary } from '../helpers/types';
+import { SessionSummary } from '../helpers/types';
 import VerticalCenter from './VerticalCenter';
+import { InterviewSessionData } from '../redux/types';
 
 interface MyProps {
   onReset: () => void;

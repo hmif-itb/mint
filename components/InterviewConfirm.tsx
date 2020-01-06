@@ -6,8 +6,8 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
-import { InterviewSessionData } from '../helpers/types';
 import VerticalCenter from './VerticalCenter';
+import { InterviewSessionData } from '../redux/types';
 
 interface MyProps {
   onBack: () => void;

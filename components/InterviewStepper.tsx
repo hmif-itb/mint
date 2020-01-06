@@ -11,8 +11,7 @@ import { withStyles } from '@material-ui/styles';
 import ReactMarkdown from 'react-markdown';
 import Typography from '@material-ui/core/Typography/Typography';
 import { connect } from 'react-redux';
-import { InterviewSessionData } from '../helpers/types';
-import { InterviewStepperState, MintReduxComponent } from '../redux/types';
+import { InterviewSessionData, InterviewStepperState, MintReduxComponent, MintState } from '../redux/types';
 import { setInterviewStepperState } from '../redux/actions';
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -21,7 +20,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   onFinish: () => void;
 }
 
-type MyProps = OwnProps & MintReduxComponent<InterviewStepperState>;
+type MyProps = OwnProps & MintReduxComponent;
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -32,9 +31,19 @@ const styles = (theme: Theme) =>
   });
 
 class InterviewStepper extends React.Component<MyProps> {
+  constructor(props: MyProps) {
+    super(props);
+  }
+
+  get interviewStepperState() {
+    return this.props.state.interviewStepper;
+  }
+
   render() {
-    const { classes, state } = this.props;
+    const { classes } = this.props;
     const { sections } = this.props.interviewSessionData.interview;
+
+    const state = this.interviewStepperState;
 
     return (
       <div>
@@ -109,12 +118,12 @@ class InterviewStepper extends React.Component<MyProps> {
   }
 
   handleNext = () => {
-    const nextStep = this.props.state.activeStep + 1;
+    const nextStep = this.interviewStepperState.activeStep + 1;
     this.setReduxState({ activeStep: nextStep });
   };
 
   handleBack = () => {
-    const prevStep = this.props.state.activeStep - 1;
+    const prevStep = this.interviewStepperState.activeStep - 1;
     this.setReduxState({ activeStep: prevStep });
   };
 
@@ -123,8 +132,8 @@ class InterviewStepper extends React.Component<MyProps> {
   };
 
   setReduxState(state: {}) {
-    this.props.dispatch(setInterviewStepperState({ ...this.props.state, ...state }));
+    this.props.dispatch(setInterviewStepperState({ ...this.interviewStepperState, ...state }));
   }
 }
 
-export default connect((state: InterviewStepperState) => ({ state }))(withStyles(styles)(InterviewStepper));
+export default connect((state: MintState) => ({ state }))(withStyles(styles)(InterviewStepper));

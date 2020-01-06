@@ -1,5 +1,6 @@
 import uuidv4 from 'uuid/v4';
-import { InterviewSessionData, SessionSummary } from './types';
+import { SessionSummary } from './types';
+import { InterviewSessionData } from '../redux/types';
 
 let sessionId: string;
 let sequenceNumber = 0;

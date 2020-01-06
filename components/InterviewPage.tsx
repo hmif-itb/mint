@@ -18,8 +18,8 @@ import Hidden from '@material-ui/core/Hidden/Hidden';
 import { connect } from 'react-redux';
 import InterviewerNote from './InterviewerNote';
 import { setInterviewPageState } from '../redux/actions';
-import { InterviewPageState, MintReduxComponent } from '../redux/types';
-import { InterviewSessionData, SessionSummary } from '../helpers/types';
+import { InterviewPageState, InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
+import { SessionSummary } from '../helpers/types';
 import InterviewStepper from './InterviewStepper';
 
 interface OwnProps {
@@ -28,7 +28,7 @@ interface OwnProps {
   onFinish: (sessionSummary: SessionSummary) => void;
 }
 
-type MyProps = OwnProps & MintReduxComponent<InterviewPageState>;
+type MyProps = OwnProps & MintReduxComponent;
 
 class InterviewPage extends React.Component<MyProps> {
   timerHandle?: number;
@@ -37,12 +37,16 @@ class InterviewPage extends React.Component<MyProps> {
     super(props);
   }
 
+  get interviewPageState() {
+    return this.props.state.interviewPage;
+  }
+
   componentDidMount() {
-    if (this.props.state.timerEnabled) this.startTimer();
+    if (this.interviewPageState.timerEnabled) this.startTimer();
   }
 
   setReduxState(state: {}) {
-    this.props.dispatch(setInterviewPageState({ ...this.props.state, ...state }));
+    this.props.dispatch(setInterviewPageState({ ...this.interviewPageState, ...state }));
   }
 
   attemptStop() {
@@ -62,7 +66,7 @@ class InterviewPage extends React.Component<MyProps> {
     const sessionSummary: SessionSummary = {
       interviewer: this.props.interviewSessionData.interviewerNim,
       interviewee: this.props.interviewSessionData.interviewerNim,
-      timeElapsed: this.props.state.timeElapsed,
+      timeElapsed: this.interviewPageState.timeElapsed,
       interviewId: this.props.interviewSessionData.interview.id,
       interviewTitle: this.props.interviewSessionData.interview.title,
       sectionTuples: [] // TODO populate
@@ -77,7 +81,7 @@ class InterviewPage extends React.Component<MyProps> {
 
     this.timerHandle = window.setInterval(() => {
       this.setReduxState({
-        timeElapsed: this.props.state.timeElapsed + 1
+        timeElapsed: this.interviewPageState.timeElapsed + 1
       });
     }, 1000);
 
@@ -104,7 +108,7 @@ class InterviewPage extends React.Component<MyProps> {
 
   render() {
     const { interviewSessionData } = this.props;
-    const reduxState = this.props.state;
+    const reduxState = this.interviewPageState;
 
     return (
       <Grid container spacing={0}>
@@ -300,4 +304,4 @@ class InterviewPage extends React.Component<MyProps> {
   }
 }
 
-export default connect((state: InterviewPageState) => ({ state }))(InterviewPage);
+export default connect((state: MintState) => ({ state }))(InterviewPage);
