@@ -12,6 +12,7 @@ import { contentLoader } from '../helpers/contentloader';
 import { resolveNim } from '../helpers/nimresolver';
 import { Interview, InterviewSessionData } from '../helpers/types';
 import { MintReduxComponent, MintState } from '../redux/types';
+import VerticalCenter from './VerticalCenter';
 
 interface MyState {
   interviews: Interview[];
@@ -110,20 +111,15 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
     return (
       <div>
         <Container maxWidth="xs">
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            style={{ minHeight: '100vh' }}
-            pt={3}
-            pb={3}
-          >
-            {this.state.loading && (
+          {this.state.loading && (
+            <VerticalCenter centerOnMobile>
               <Box display="flex" alignItems="center" justifyContent="center">
                 <PacmanLoader color="#FFC300" />
               </Box>
-            )}
-            {!this.state.loading && (
+            </VerticalCenter>
+          )}
+          {!this.state.loading && (
+            <VerticalCenter>
               <Box>
                 <Box>
                   <Typography variant="h3" component="span" color="primary" style={{ fontWeight: 900 }}>
@@ -204,8 +200,8 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
                   </Button>
                 </Box>
               </Box>
-            )}
-          </Box>
+            </VerticalCenter>
+          )}
         </Container>
       </div>
     );

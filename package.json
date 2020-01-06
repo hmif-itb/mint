@@ -9,7 +9,6 @@
     "start": "next start",
     "export": "next export",
     "lint": "eslint --max-warnings 0 --ext .ts,.js,.tsx,.jsx .",
-    "lint-fix": "eslint --max-warnings 0 --fix --ext .ts,.js,.tsx,.jsx .",
     "prettier:write": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}"
   },
   "repository": {

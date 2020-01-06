@@ -5,6 +5,7 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import { InterviewSessionData, SessionSummary } from '../helpers/types';
+import VerticalCenter from './VerticalCenter';
 
 interface MyProps {
   onReset: () => void;
@@ -29,14 +30,7 @@ export default class InterviewFinished extends React.Component<MyProps> {
     return (
       <div>
         <Container maxWidth="xs">
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            style={{ minHeight: '100vh' }}
-            pt={3}
-            pb={3}
-          >
+          <VerticalCenter>
             <Box>
               <Typography variant="h4" color="primary" style={{ fontWeight: 900 }}>
                 Kalian keren!
@@ -68,7 +62,7 @@ export default class InterviewFinished extends React.Component<MyProps> {
                 </Button>
               </Box>
             </Box>
-          </Box>
+          </VerticalCenter>
         </Container>
       </div>
     );

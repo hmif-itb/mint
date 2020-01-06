@@ -22,10 +22,6 @@ import { InterviewPageState, MintReduxComponent } from '../redux/types';
 import { InterviewSessionData, SessionSummary } from '../helpers/types';
 import InterviewStepper from './InterviewStepper';
 
-interface OwnState {
-  timerHandle?: number;
-}
-
 interface OwnProps {
   interviewSessionData: InterviewSessionData;
   onReset: () => void;
@@ -34,7 +30,13 @@ interface OwnProps {
 
 type MyProps = OwnProps & MintReduxComponent<InterviewPageState>;
 
-class InterviewPage extends React.Component<MyProps, OwnState> {
+class InterviewPage extends React.Component<MyProps> {
+  timerHandle?: number;
+
+  constructor(props: MyProps) {
+    super(props);
+  }
+
   componentDidMount() {
     if (this.props.state.timerEnabled) this.startTimer();
   }
@@ -44,7 +46,6 @@ class InterviewPage extends React.Component<MyProps, OwnState> {
   }
 
   attemptStop() {
-    this.stopTimer();
     this.setReduxState({ stopDialogOpen: true });
   }
 
@@ -54,7 +55,6 @@ class InterviewPage extends React.Component<MyProps, OwnState> {
   }
 
   cancelStop() {
-    this.startTimer();
     this.setReduxState({ stopDialogOpen: false });
   }
 
@@ -73,20 +73,22 @@ class InterviewPage extends React.Component<MyProps, OwnState> {
   }
 
   startTimer() {
-    const timerHandle = window.setInterval(() => {
+    if (!this.timerHandle) window.clearInterval(this.timerHandle);
+
+    this.timerHandle = window.setInterval(() => {
       this.setReduxState({
         timeElapsed: this.props.state.timeElapsed + 1
       });
     }, 1000);
 
-    this.setState({ timerHandle });
     this.setReduxState({ timerEnabled: true });
   }
 
   stopTimer() {
-    if (this.state.timerHandle) window.clearInterval(this.state.timerHandle);
+    if (this.timerHandle) window.clearInterval(this.timerHandle);
 
-    this.setState({ timerHandle: undefined });
+    this.timerHandle = undefined;
+
     this.setReduxState({ timerEnabled: false });
   }
 

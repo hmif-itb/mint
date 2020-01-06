@@ -45,6 +45,12 @@ export default class InterviewerNote extends React.Component {
 
   render() {
     const { editorState } = this.state;
+
+    const toolbarConfig = {
+      block: ['unordered-list-item', 'ordered-list-item', 'header-three'],
+      inline: ['BOLD', 'ITALIC', 'UNDERLINE']
+    };
+
     return (
       <>
         <style>
@@ -82,6 +88,7 @@ export default class InterviewerNote extends React.Component {
             editorState={editorState}
             onChange={(editorState) => this.onChange(editorState)}
             sideButtons={[]}
+            toolbarConfig={toolbarConfig}
           />
         </NoSSR>
       </>
