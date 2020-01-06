@@ -9,11 +9,11 @@ export default function usageLoggingReducer(
     case StateAction.SET_USAGE_LOGGING_STATE:
       return { ...state, ...action.state } as UsageLoggingState;
     case StateAction.USAGE_LOGGING_SET_TIME_ELAPSED:
-      let sectionCumulativeTime = state.sectionCumulativeTime;
+      let sectionCumulativeTime = { ...state.sectionCumulativeTime };
       sectionCumulativeTime[action.order] = action.timeElapsed;
       return { ...state, sectionCumulativeTime };
     case StateAction.CLEAR_STATE:
-      return defaultUsageLoggingState;
+      return { ...defaultUsageLoggingState };
     default:
       return state;
   }
