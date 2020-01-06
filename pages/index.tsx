@@ -55,7 +55,7 @@ class WelcomePage extends React.Component<MintReduxComponent> {
   }
 
   setReduxState(state: {}) {
-    this.props.dispatch(setIndexPageState({ ...this.indexPageState, ...state }));
+    this.props.dispatch(setIndexPageState(state));
   }
 
   goBack() {

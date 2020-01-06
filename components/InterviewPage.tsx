@@ -46,7 +46,7 @@ class InterviewPage extends React.Component<MyProps> {
   }
 
   setReduxState(state: {}) {
-    this.props.dispatch(setInterviewPageState({ ...this.interviewPageState, ...state }));
+    this.props.dispatch(setInterviewPageState(state));
   }
 
   attemptStop() {
@@ -72,6 +72,7 @@ class InterviewPage extends React.Component<MyProps> {
       sectionTuples: [] // TODO populate
     };
 
+    this.persistStepDuration();
     this.stopTimer();
     this.props.onFinish(sessionSummary);
   }
@@ -107,16 +108,24 @@ class InterviewPage extends React.Component<MyProps> {
   }
 
   handleStepChange(activeStep: number) {
-    const currentActiveStep = this.interviewPageState.activeStep;
+    this.persistStepDuration();
+    this.setReduxState({ activeStep });
+  }
 
+  persistStepDuration() {
     const { dispatch, interviewSessionData, state } = this.props;
+
+    const currentActiveStep = this.interviewPageState.activeStep;
+    const timeElapsed = this.interviewPageState.timeElapsed;
+    const lastStepChangeTimestamp = this.interviewPageState.lastStepChangeTimestamp;
+
     const orderNumber = interviewSessionData.interview.sections[currentActiveStep].order;
     const prevTimeElapsed = state.usageLogging.sectionCumulativeTime[orderNumber] || 0;
-    const timeDifference = this.interviewPageState.timeElapsed - this.interviewPageState.lastStepChangeTimestamp;
-    const timeElapsed = prevTimeElapsed + timeDifference;
+    const timeDifference = timeElapsed - lastStepChangeTimestamp;
+    const newTimeElapsed = prevTimeElapsed + timeDifference;
 
-    dispatch(usageLoggingSetTimeElapsed(orderNumber, timeElapsed));
-    this.setReduxState({ activeStep, lastStepChangeTimestamp: this.interviewPageState.timeElapsed });
+    dispatch(usageLoggingSetTimeElapsed(orderNumber, newTimeElapsed));
+    this.setReduxState({ lastStepChangeTimestamp: timeElapsed });
   }
 
   render() {
