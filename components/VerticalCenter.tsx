@@ -1,4 +1,4 @@
-import React, { ComponentProps, PropsWithChildren, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import Box from '@material-ui/core/Box/Box';
 import useMediaQuery from '@material-ui/core/useMediaQuery/useMediaQuery';
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -10,7 +10,7 @@ interface MyProps {
 
 export default (props: MyProps) => {
   const theme = useTheme();
-  const shouldCenter = props.centerOnMobile || !useMediaQuery(theme.breakpoints.down('sm'));
+  const shouldCenter = props.centerOnMobile || !useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <Box

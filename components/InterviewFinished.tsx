@@ -6,15 +6,19 @@ import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import { SessionSummary } from '../helpers/types';
 import VerticalCenter from './VerticalCenter';
-import { InterviewSessionData } from '../redux/types';
+import { InterviewSessionData, MintReduxComponent, MintState, Section } from '../redux/types';
+import { connect } from 'react-redux';
+import { default as ProportionChart, ProportionChartItem } from './ProportionChart';
 
-interface MyProps {
+interface OwnProps {
   onReset: () => void;
   interviewSessionData: InterviewSessionData;
   sessionSummary: SessionSummary;
 }
 
-export default class InterviewFinished extends React.Component<MyProps> {
+type MyProps = OwnProps & MintReduxComponent;
+
+class InterviewFinished extends React.Component<MyProps> {
   static secondsToHms(d: number): string {
     const h = Math.floor(d / 3600);
     const m = Math.floor((d % 3600) / 60);
@@ -26,7 +30,17 @@ export default class InterviewFinished extends React.Component<MyProps> {
   }
 
   render() {
-    const { sessionSummary, onReset } = this.props;
+    const { sessionSummary, onReset, state } = this.props;
+    const sectionCumulativeTime = state.usageLogging.sectionCumulativeTime;
+    const sections = state.indexPage.interviewSessionData?.interview.sections;
+    const timeElapsedSummary =
+      sections?.map((section: Section) => {
+        const timeElapsed = sectionCumulativeTime[section.order] || 0;
+        return {
+          title: `${section.title}`,
+          value: timeElapsed
+        } as ProportionChartItem;
+      }) || [];
 
     return (
       <div>
@@ -46,6 +60,9 @@ export default class InterviewFinished extends React.Component<MyProps> {
                 <Typography variant="h5" style={{ fontWeight: 900 }}>
                   {InterviewFinished.secondsToHms(sessionSummary.timeElapsed)}
                 </Typography>
+              </Box>
+              <Box mt={3}>
+                <ProportionChart series={timeElapsedSummary} />
               </Box>
               <Box mt={3}>
                 <Button
@@ -69,3 +86,5 @@ export default class InterviewFinished extends React.Component<MyProps> {
     );
   }
 }
+
+export default connect((state: MintState) => ({ state }))(InterviewFinished);
