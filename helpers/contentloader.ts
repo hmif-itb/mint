@@ -23,12 +23,18 @@ export class ContentLoader {
   }
 
   async loadInterview(interview: Interview): Promise<Interview> {
-    interview.sections = await Promise.all(interview.sections.map((section) => this.loadSection(section)));
+    const sections = await Promise.all(interview.sections.map((section) => this.loadSection(section)));
+
+    // Remove empty sections
+    interview.sections = sections.filter((section) => section.contents.length > 0);
     return interview;
   }
 
   async loadSection(section: Section): Promise<Section> {
-    section.contents = await Promise.all(section.contents.map((markdownUrl) => this.loadContent(markdownUrl)));
+    const contents = await Promise.all(section.contents.map((markdownUrl) => this.loadContent(markdownUrl)));
+
+    // Remove empty content
+    section.contents = contents.filter((content) => !!content);
     return section;
   }
 

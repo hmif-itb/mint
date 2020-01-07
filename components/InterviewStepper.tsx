@@ -36,6 +36,29 @@ class InterviewStepper extends React.Component<MyProps> {
     super(props);
   }
 
+  replaceDynamicParameters(markdown: string) {
+    const { state } = this.props;
+    const interviewSessionData = state.indexPage.interviewSessionData;
+
+    if (!interviewSessionData) {
+      return markdown;
+    }
+
+    const { interviewerName, intervieweeName, interviewerNim, intervieweeNim } = interviewSessionData;
+
+    const parameters: { [key: string]: string } = {
+      interviewerName: (interviewerName as string) || '',
+      intervieweeName: (intervieweeName as string) || '',
+      interviewerNim: (interviewerNim as string) || '',
+      intervieweeNim: (intervieweeNim as string) || ''
+    };
+
+    return Object.keys(parameters).reduce(function(result, key) {
+      const string = parameters[key];
+      return result.replace(new RegExp(`{${key}}`, 'g'), string);
+    }, markdown);
+  }
+
   render() {
     const { classes, activeStep } = this.props;
     const { sections } = this.props.interviewSessionData.interview;
@@ -79,7 +102,7 @@ class InterviewStepper extends React.Component<MyProps> {
                 </StepLabel>
                 <StepContent style={{ fontSize: '12pt' }}>
                   <Box>
-                    <ReactMarkdown source={step.contents[0]} />
+                    <ReactMarkdown source={this.replaceDynamicParameters(step.contents[0])} />
                   </Box>
                   <Box mt={3}>
                     <div>
