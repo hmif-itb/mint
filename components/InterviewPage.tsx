@@ -18,9 +18,10 @@ import Hidden from '@material-ui/core/Hidden/Hidden';
 import { connect } from 'react-redux';
 import InterviewerNote from './InterviewerNote';
 import { setInterviewPageState, usageLoggingSetTimeElapsed } from '../redux/actions';
-import { InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
-import { SessionSummary } from '../helpers/types';
+import { InterviewSessionData, MintReduxComponent, MintState, Section } from '../redux/types';
+import { SectionTuple, SessionSummary } from '../helpers/types';
 import InterviewStepper from './InterviewStepper';
+import { ProportionChartItem } from './ProportionChart';
 
 interface OwnProps {
   interviewSessionData: InterviewSessionData;
@@ -63,13 +64,22 @@ class InterviewPage extends React.Component<MyProps> {
   }
 
   handleFinish() {
+    const sections = this.props.state.indexPage.interviewSessionData?.interview.sections;
+    const sectionCumulativeTime = this.props.state.usageLogging.sectionCumulativeTime;
+
+    const sectionTuples =
+      sections?.map((section: Section) => {
+        const timeElapsed = sectionCumulativeTime[section.order] || 0;
+        return {
+          sectionTitle: `${section.title}`,
+          sectionOrder: section.order,
+          timeElapsed
+        } as SectionTuple;
+      }) || [];
+
     const sessionSummary: SessionSummary = {
-      interviewer: this.props.interviewSessionData.interviewerNim,
-      interviewee: this.props.interviewSessionData.interviewerNim,
       timeElapsed: this.interviewPageState.timeElapsed,
-      interviewId: this.props.interviewSessionData.interview.id,
-      interviewTitle: this.props.interviewSessionData.interview.title,
-      sectionTuples: [] // TODO populate
+      sectionTuples: sectionTuples
     };
 
     this.persistStepDuration();

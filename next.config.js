@@ -9,6 +9,7 @@ module.exports = withCSS({
   },
   env: {
     contentBaseUrl: 'https://mint-content.hmif.tech',
-    nimJsonUrl: 'https://mint-content.hmif.tech/nim/nim.json'
+    nimJsonUrl: 'https://mint-content.hmif.tech/nim/nim.json',
+    usageLoggingBaseUrl: 'http://localhost:5000/mint-tech/us-central1/api'
   }
 });

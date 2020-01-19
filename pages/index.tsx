@@ -102,7 +102,10 @@ class WelcomePage extends React.Component<MintReduxComponent> {
       currentStep: Step.CONFIRMATION
     });
 
-    eventLogger.initSession(interviewSessionData);
+    eventLogger.initSession(interviewSessionData).then((res) => {
+      const { sessionId } = res;
+      this.setReduxState({ sessionId });
+    });
   }
 }
 

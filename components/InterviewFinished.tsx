@@ -31,16 +31,13 @@ class InterviewFinished extends React.Component<MyProps> {
 
   render() {
     const { sessionSummary, onReset, state } = this.props;
-    const sectionCumulativeTime = state.usageLogging.sectionCumulativeTime;
-    const sections = state.indexPage.interviewSessionData?.interview.sections;
-    const timeElapsedSummary =
-      sections?.map((section: Section) => {
-        const timeElapsed = sectionCumulativeTime[section.order] || 0;
-        return {
-          title: `${section.title}`,
-          value: timeElapsed
-        } as ProportionChartItem;
-      }) || [];
+
+    const timeElapsedSummary = sessionSummary.sectionTuples.map((sectionTuple) => {
+      return {
+        title: `${sectionTuple.sectionTitle}`,
+        value: sectionTuple.timeElapsed
+      } as ProportionChartItem;
+    });
 
     return (
       <div>

@@ -38,6 +38,7 @@ export enum StateAction {
 }
 
 export interface IndexPageState {
+  sessionId?: string;
   interviews: Interview[];
   currentStep: Step;
   interviewSessionData?: InterviewSessionData;

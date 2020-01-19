@@ -1,36 +1,28 @@
-import uuidv4 from 'uuid/v4';
+import axios from 'axios';
 import { SessionSummary } from './types';
 import { InterviewSessionData } from '../redux/types';
 
-let sessionId: string;
-let sequenceNumber = 0;
-const logEvents: LogEntry[] = [];
+const usageLoggingBaseUrl = process.env.usageLoggingBaseUrl || '';
 
-export interface LogEntry {
-  timestamp: number;
-  timeElapsed: number;
-  eventType: string;
-  eventData: string;
-}
+export async function initSession(interviewSessionData: InterviewSessionData) {
+  const { interviewerNim, interviewerName, intervieweeNim, intervieweeName, interview } = interviewSessionData;
+  const { id, title } = interview;
 
-export function initSession(interviewSessionData: InterviewSessionData) {
-  sessionId = uuidv4();
-  emitEvent(0, 'init', JSON.stringify(interviewSessionData));
-}
-
-export function emitEvent(timeElapsed: number, eventType: string, eventData: string) {
-  const entry: LogEntry = {
-    timestamp: Math.round(Date.now() / 1000),
-    timeElapsed,
-    eventType,
-    eventData
+  const requestData = {
+    interviewerNim,
+    interviewerName,
+    intervieweeNim,
+    intervieweeName,
+    interviewId: id,
+    interviewName: title
   };
 
-  logEvents.push(entry);
-  sequenceNumber++;
+  const response = await axios.post(`${usageLoggingBaseUrl}/v1/init`, requestData);
+  const { sessionId, userAgentId } = response.data;
+  return { sessionId };
 }
 
-export function endSession(sessionSummary: SessionSummary) {
-  emitEvent(sessionSummary.timeElapsed, 'end', JSON.stringify(sessionSummary));
+export function endSession(sessionId: string, sessionSummary: SessionSummary) {
+  // emitEvent(sessionSummary.timeElapsed, 'end', JSON.stringify(sessionSummary));
   // TODO call server
 }
