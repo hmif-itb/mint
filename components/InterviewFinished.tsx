@@ -2,13 +2,15 @@ import React from 'react';
 import Container from '@material-ui/core/Container/Container';
 import Box from '@material-ui/core/Box/Box';
 import ReplayIcon from '@material-ui/icons/Replay';
+import EmailIcon from '@material-ui/icons/Email';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import { SessionSummary } from '../helpers/types';
 import VerticalCenter from './VerticalCenter';
-import { InterviewSessionData, MintReduxComponent, MintState, Section } from '../redux/types';
+import { InterviewSessionData, MintReduxComponent, MintState } from '../redux/types';
 import { connect } from 'react-redux';
 import { default as ProportionChart, ProportionChartItem } from './ProportionChart';
+import SendMailDialog from './SendMailDialog';
 
 interface OwnProps {
   onReset: () => void;
@@ -16,9 +18,20 @@ interface OwnProps {
   sessionSummary: SessionSummary;
 }
 
+interface MyState {
+  sendmailDialogOpen: boolean;
+}
+
 type MyProps = OwnProps & MintReduxComponent;
 
-class InterviewFinished extends React.Component<MyProps> {
+class InterviewFinished extends React.Component<MyProps, MyState> {
+  constructor(props: MyProps) {
+    super(props);
+    this.state = {
+      sendmailDialogOpen: false
+    };
+  }
+
   static secondsToHms(d: number): string {
     const h = Math.floor(d / 3600);
     const m = Math.floor((d % 3600) / 60);
@@ -70,6 +83,21 @@ class InterviewFinished extends React.Component<MyProps> {
                     textTransform: 'none'
                   }}
                   disableElevation
+                  onClick={() => this.setState({ sendmailDialogOpen: true })}
+                >
+                  Kirim Ringkasan via Email &nbsp;
+                  <EmailIcon fontSize="inherit" />
+                </Button>
+              </Box>
+              <Box mt={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    width: '100%',
+                    textTransform: 'none'
+                  }}
+                  disableElevation
                   onClick={onReset}
                 >
                   Ulangi &nbsp;
@@ -79,9 +107,16 @@ class InterviewFinished extends React.Component<MyProps> {
             </Box>
           </VerticalCenter>
         </Container>
+        <SendMailDialog
+          onClose={() => this.setState({ sendmailDialogOpen: false })}
+          onSent={() => this.onEmailSent()}
+          open={this.state.sendmailDialogOpen}
+        />
       </div>
     );
   }
+
+  onEmailSent() {}
 }
 
 export default connect((state: MintState) => ({ state }))(InterviewFinished);

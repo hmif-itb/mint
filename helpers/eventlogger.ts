@@ -43,6 +43,11 @@ export class EventLogger {
 
     await axios.post(`${this.baseUrl}/v1/finish`, requestData);
   }
+
+  async sendMail(sessionId: string, email: string, interviewerNotes: string, recaptcha: string) {
+    const requestData = { sessionId, email, interviewerNotes, recaptcha };
+    await axios.post(`${this.baseUrl}/v1/mail`, requestData);
+  }
 }
 
 export const eventLogger = new EventLogger(process.env.usageLoggingBaseUrl || '');
