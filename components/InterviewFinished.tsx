@@ -116,7 +116,9 @@ class InterviewFinished extends React.Component<MyProps, MyState> {
     );
   }
 
-  onEmailSent() {}
+  onEmailSent() {
+    this.setState({ sendmailDialogOpen: false });
+  }
 }
 
 export default connect((state: MintState) => ({ state }))(InterviewFinished);
