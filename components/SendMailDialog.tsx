@@ -102,7 +102,7 @@ class SendMailDialog extends React.Component<MyProps, MyState> {
             <Button
               variant="contained"
               color="primary"
-              disabled={!this.state.recaptchaValue || !this.emailValid || !!this.state.sendingEmail}
+              disabled={!this.state.recaptchaValue || !this.emailValid || this.state.sendingEmail}
               style={{
                 width: '100%',
                 textTransform: 'none'

@@ -25,6 +25,7 @@
   "dependencies": {
     "@material-ui/core": "^4.8.0",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.39",
     "@types/randomcolor": "^0.5.3",
     "@types/react-google-recaptcha": "^1.1.1",
     "@types/uuid": "^3.4.6",
