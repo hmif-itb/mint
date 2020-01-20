@@ -5,18 +5,20 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { MintState, defaultState } from './types';
 
-import indexPageReducer from './reducers/indexPage';
+import sessionReducer from './reducers/session';
 import interviewPageReducer from './reducers/interviewPage';
 import usageLoggingReducer from './reducers/usageLogging';
+import trackerReducer from './reducers/tracker';
 
 const makeConfiguredStore = (reducer: Reducer, initialState: MintState = defaultState) =>
   createStore(reducer, initialState, applyMiddleware(thunk));
 
 export const initStore = (initialState: MintState, { isServer }: MakeStoreOptions) => {
   const rootReducers = combineReducers({
-    indexPage: indexPageReducer,
+    session: sessionReducer,
     interviewPage: interviewPageReducer,
-    usageLogging: usageLoggingReducer
+    usageLogging: usageLoggingReducer,
+    tracker: trackerReducer
   });
 
   if (isServer) {

@@ -4,22 +4,22 @@ import InterviewSelector from '../components/InterviewSelector';
 import InterviewConfirm from '../components/InterviewConfirm';
 import InterviewPage from '../components/InterviewPage';
 import { SessionSummary } from '../helpers/types';
-import * as eventLogger from '../helpers/eventlogger';
+import { eventLogger } from '../helpers/eventlogger';
 import InterviewFinished from '../components/InterviewFinished';
 import { InterviewSessionData, MintReduxComponent, MintState, Step } from '../redux/types';
-import { clearState, setIndexPageState } from '../redux/actions';
+import { clearState, setSessionState, setTrackerState } from '../redux/actions';
 
 class WelcomePage extends React.Component<MintReduxComponent> {
   constructor(props: MintReduxComponent) {
     super(props);
   }
 
-  get indexPageState() {
-    return this.props.state.indexPage;
+  get sessionState() {
+    return this.props.state.session;
   }
 
   render() {
-    const state = this.indexPageState;
+    const state = this.sessionState;
 
     return (
       <>
@@ -54,31 +54,31 @@ class WelcomePage extends React.Component<MintReduxComponent> {
     );
   }
 
-  setReduxState(state: {}) {
-    this.props.dispatch(setIndexPageState(state));
+  setReduxSessionState(state: {}) {
+    this.props.dispatch(setSessionState(state));
   }
 
   goBack() {
-    switch (this.indexPageState.currentStep) {
+    switch (this.sessionState.currentStep) {
       case Step.CONFIRMATION:
-        this.setReduxState({ currentStep: Step.SELECT_INTERVIEW });
+        this.setReduxSessionState({ currentStep: Step.SELECT_INTERVIEW });
         break;
       case Step.INTERVIEW:
-        this.setReduxState({ currentStep: Step.CONFIRMATION });
+        this.setReduxSessionState({ currentStep: Step.CONFIRMATION });
         break;
     }
   }
 
   goNext() {
-    switch (this.indexPageState.currentStep) {
+    switch (this.sessionState.currentStep) {
       case Step.SELECT_INTERVIEW:
-        this.setReduxState({ currentStep: Step.CONFIRMATION });
+        this.setReduxSessionState({ currentStep: Step.CONFIRMATION });
         break;
       case Step.CONFIRMATION:
-        this.setReduxState({ currentStep: Step.INTERVIEW });
+        this.setReduxSessionState({ currentStep: Step.INTERVIEW });
         break;
       case Step.INTERVIEW:
-        this.setReduxState({ currentStep: Step.FINISHED });
+        this.setReduxSessionState({ currentStep: Step.FINISHED });
         break;
     }
   }
@@ -88,23 +88,33 @@ class WelcomePage extends React.Component<MintReduxComponent> {
   }
 
   finishSession(sessionSummary: SessionSummary) {
-    this.setReduxState({
+    const { sessionId } = this.sessionState;
+
+    if (sessionId) {
+      eventLogger.endSession(sessionId, sessionSummary).catch((e) => {
+        console.error('Cannot end session', e);
+      });
+    }
+
+    this.setReduxSessionState({
       sessionSummary
     });
+
     this.goNext();
   }
 
-  // TODO create endSession
-
   onInterviewSelectorProceed(interviewSessionData: InterviewSessionData) {
-    this.setReduxState({
+    this.setReduxSessionState({
       interviewSessionData,
       currentStep: Step.CONFIRMATION
     });
 
-    eventLogger.initSession(interviewSessionData).then((res) => {
-      const { sessionId } = res;
-      this.setReduxState({ sessionId });
+    const currentUserAgentId = this.props.state.tracker.userAgentId;
+
+    eventLogger.initSession(interviewSessionData, currentUserAgentId).then((res) => {
+      const { sessionId, userAgentId } = res;
+      this.setReduxSessionState({ sessionId });
+      this.props.dispatch(setTrackerState({ userAgentId }));
     });
   }
 }

@@ -21,7 +21,6 @@ import { setInterviewPageState, usageLoggingSetTimeElapsed } from '../redux/acti
 import { InterviewSessionData, MintReduxComponent, MintState, Section } from '../redux/types';
 import { SectionTuple, SessionSummary } from '../helpers/types';
 import InterviewStepper from './InterviewStepper';
-import { ProportionChartItem } from './ProportionChart';
 
 interface OwnProps {
   interviewSessionData: InterviewSessionData;
@@ -46,8 +45,8 @@ class InterviewPage extends React.Component<MyProps> {
     if (this.interviewPageState.timerEnabled) this.startTimer();
   }
 
-  setReduxState(state: {}) {
-    this.props.dispatch(setInterviewPageState(state));
+  async setReduxState(state: {}) {
+    await this.props.dispatch(setInterviewPageState(state));
   }
 
   attemptStop() {
@@ -63,8 +62,11 @@ class InterviewPage extends React.Component<MyProps> {
     this.setReduxState({ stopDialogOpen: false });
   }
 
-  handleFinish() {
-    const sections = this.props.state.indexPage.interviewSessionData?.interview.sections;
+  async handleFinish() {
+    await this.persistStepDuration();
+    this.stopTimer();
+
+    const sections = this.props.state.session.interviewSessionData?.interview.sections;
     const sectionCumulativeTime = this.props.state.usageLogging.sectionCumulativeTime;
 
     const sectionTuples =
@@ -82,8 +84,6 @@ class InterviewPage extends React.Component<MyProps> {
       sectionTuples: sectionTuples
     };
 
-    this.persistStepDuration();
-    this.stopTimer();
     this.props.onFinish(sessionSummary);
   }
 
@@ -122,7 +122,7 @@ class InterviewPage extends React.Component<MyProps> {
     this.setReduxState({ activeStep });
   }
 
-  persistStepDuration() {
+  async persistStepDuration() {
     const { dispatch, interviewSessionData, state } = this.props;
 
     const currentActiveStep = this.interviewPageState.activeStep;
@@ -134,8 +134,8 @@ class InterviewPage extends React.Component<MyProps> {
     const timeDifference = timeElapsed - lastStepChangeTimestamp;
     const newTimeElapsed = prevTimeElapsed + timeDifference;
 
-    dispatch(usageLoggingSetTimeElapsed(orderNumber, newTimeElapsed));
-    this.setReduxState({ lastStepChangeTimestamp: timeElapsed });
+    await dispatch(usageLoggingSetTimeElapsed(orderNumber, newTimeElapsed));
+    await this.setReduxState({ lastStepChangeTimestamp: timeElapsed });
   }
 
   render() {

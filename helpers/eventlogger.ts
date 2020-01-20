@@ -2,27 +2,47 @@ import axios from 'axios';
 import { SessionSummary } from './types';
 import { InterviewSessionData } from '../redux/types';
 
-const usageLoggingBaseUrl = process.env.usageLoggingBaseUrl || '';
+export class EventLogger {
+  baseUrl: string;
 
-export async function initSession(interviewSessionData: InterviewSessionData) {
-  const { interviewerNim, interviewerName, intervieweeNim, intervieweeName, interview } = interviewSessionData;
-  const { id, title } = interview;
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
 
-  const requestData = {
-    interviewerNim,
-    interviewerName,
-    intervieweeNim,
-    intervieweeName,
-    interviewId: id,
-    interviewName: title
-  };
+  async initSession(interviewSessionData: InterviewSessionData, currentUserAgentId?: string) {
+    const { interviewerNim, interviewerName, intervieweeNim, intervieweeName, interview } = interviewSessionData;
+    const { id, title } = interview;
 
-  const response = await axios.post(`${usageLoggingBaseUrl}/v1/init`, requestData);
-  const { sessionId, userAgentId } = response.data;
-  return { sessionId };
+    const requestData = {
+      interviewerNim,
+      interviewerName,
+      intervieweeNim,
+      intervieweeName,
+      interviewId: id,
+      interviewName: title,
+      userAgentId: currentUserAgentId
+    };
+
+    const response = await axios.post(`${this.baseUrl}/v1/init`, requestData);
+    const { sessionId, userAgentId } = response.data;
+    return { sessionId, userAgentId };
+  }
+
+  async endSession(sessionId: string, sessionSummary: SessionSummary) {
+    const sections = sessionSummary.sectionTuples.map((sectionTuple) => ({
+      title: sectionTuple.sectionTitle,
+      order: sectionTuple.sectionOrder,
+      timeElapsed: sectionTuple.timeElapsed
+    }));
+
+    const requestData = {
+      id: sessionId,
+      timeElapsed: sessionSummary.timeElapsed,
+      sections
+    };
+
+    await axios.post(`${this.baseUrl}/v1/finish`, requestData);
+  }
 }
 
-export function endSession(sessionId: string, sessionSummary: SessionSummary) {
-  // emitEvent(sessionSummary.timeElapsed, 'end', JSON.stringify(sessionSummary));
-  // TODO call server
-}
+export const eventLogger = new EventLogger(process.env.usageLoggingBaseUrl || '');

@@ -29,18 +29,18 @@ export interface InterviewSessionData {
 }
 
 export enum StateAction {
-  SET_INDEX_PAGE_STATE = 'setIndexPageState',
+  SET_SESSION_STATE = 'setSessionState',
   SET_INTERVIEW_PAGE_STATE = 'setInterviewPageState',
-  SET_INTERVIEW_STEPPER_STATE = 'setInterviewStepperState',
   SET_USAGE_LOGGING_STATE = 'setUsageLoggingState',
+  SET_TRACKER_STATE = 'setTrackerState',
   USAGE_LOGGING_SET_TIME_ELAPSED = 'usageLoggingSetTimeElapsed',
   CLEAR_STATE = 'clearState'
 }
 
-export interface IndexPageState {
-  sessionId?: string;
+export interface SessionState {
   interviews: Interview[];
   currentStep: Step;
+  sessionId?: string;
   interviewSessionData?: InterviewSessionData;
   sessionSummary?: SessionSummary;
 }
@@ -55,13 +55,6 @@ export interface InterviewPageState {
   lastStepChangeTimestamp: number;
 }
 
-export interface LogEntry {
-  timestamp: number;
-  timeElapsed: number;
-  eventType: string;
-  eventData: string;
-}
-
 export interface UsageLoggingState {
   beginTime?: number;
   endTime?: number;
@@ -69,7 +62,25 @@ export interface UsageLoggingState {
   sectionCumulativeTime: { [order: number]: number };
 }
 
-export const defaultIndexPageState: IndexPageState = {
+export interface TrackerState {
+  userAgentId?: string;
+}
+
+export interface MintState {
+  session: SessionState;
+  interviewPage: InterviewPageState;
+  usageLogging: UsageLoggingState;
+  tracker: TrackerState;
+}
+
+export interface LogEntry {
+  timestamp: number;
+  timeElapsed: number;
+  eventType: string;
+  eventData: string;
+}
+
+export const defaultSessionState: SessionState = {
   interviews: [],
   currentStep: Step.SELECT_INTERVIEW
 };
@@ -89,17 +100,16 @@ export const defaultUsageLoggingState: UsageLoggingState = {
   sectionCumulativeTime: {}
 };
 
-export const defaultState: MintState = {
-  indexPage: defaultIndexPageState,
-  interviewPage: defaultInterviewPageState,
-  usageLogging: defaultUsageLoggingState
+export const defaultTrackerState: TrackerState = {
+  userAgentId: undefined
 };
 
-export interface MintState {
-  indexPage: IndexPageState;
-  interviewPage: InterviewPageState;
-  usageLogging: UsageLoggingState;
-}
+export const defaultState: MintState = {
+  session: defaultSessionState,
+  interviewPage: defaultInterviewPageState,
+  usageLogging: defaultUsageLoggingState,
+  tracker: defaultTrackerState
+};
 
 export interface MintReduxComponent {
   state: MintState;

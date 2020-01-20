@@ -1,9 +1,9 @@
 import { AnyAction } from 'redux';
-import { IndexPageState, InterviewPageState, StateAction, UsageLoggingState } from './types';
+import { SessionState, InterviewPageState, StateAction, UsageLoggingState, TrackerState } from './types';
 
-export function setIndexPageState(state: Partial<IndexPageState>): AnyAction {
+export function setSessionState(state: Partial<SessionState>): AnyAction {
   return {
-    type: StateAction.SET_INDEX_PAGE_STATE,
+    type: StateAction.SET_SESSION_STATE,
     state
   };
 }
@@ -18,6 +18,13 @@ export function setInterviewPageState(state: Partial<InterviewPageState>): AnyAc
 export function setUsageLoggingState(state: Partial<UsageLoggingState>): AnyAction {
   return {
     type: StateAction.SET_USAGE_LOGGING_STATE,
+    state
+  };
+}
+
+export function setTrackerState(state: Partial<TrackerState>): AnyAction {
+  return {
+    type: StateAction.SET_TRACKER_STATE,
     state
   };
 }

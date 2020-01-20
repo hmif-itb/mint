@@ -38,7 +38,7 @@ class InterviewStepper extends React.Component<MyProps> {
 
   replaceDynamicParameters(markdown: string) {
     const { state } = this.props;
-    const interviewSessionData = state.indexPage.interviewSessionData;
+    const interviewSessionData = state.session.interviewSessionData;
 
     if (!interviewSessionData) {
       return markdown;
