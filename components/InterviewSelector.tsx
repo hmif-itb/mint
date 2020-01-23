@@ -54,11 +54,11 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
   }
 
   submitForm() {
-    if (this.state.interviewerNim.length !== 8) {
+    if (!InterviewSelector.isNimValid(this.state.interviewerNim)) {
       return;
     }
 
-    if (this.state.intervieweeNim.length !== 8) {
+    if (!InterviewSelector.isNimValid(this.state.intervieweeNim)) {
       return;
     }
 
@@ -106,6 +106,14 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
     return newInterview;
   }
 
+  static isNimValid(nim: string): boolean {
+    return /^\d{8}$/.test(nim);
+  }
+
+  static isNimInvalidAndNotEmpty(nim: string): boolean {
+    return !InterviewSelector.isNimValid(nim) && !!nim;
+  }
+
   render() {
     return (
       <div>
@@ -135,12 +143,16 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
                   </p>
                 </Box>
                 <Box mt={3}>
-                  <b>Apa NIM kamu?</b>
+                  <b>Berapa NIM kamu?</b>
                   <TextField
                     variant="outlined"
                     margin="dense"
                     fullWidth
                     value={this.state.interviewerNim}
+                    error={InterviewSelector.isNimInvalidAndNotEmpty(this.state.interviewerNim)}
+                    helperText={
+                      !InterviewSelector.isNimInvalidAndNotEmpty(this.state.interviewerNim) ? '' : 'Format NIM salah'
+                    }
                     onChange={(event) =>
                       this.setState({
                         interviewerNim: event.target.value as string
@@ -149,12 +161,16 @@ class InterviewSelector extends React.Component<MyProps, MyState> {
                   />
                 </Box>
                 <Box mt={3}>
-                  <b>Apa NIM teman kamu yang diwawancara?</b>
+                  <b>Berapa NIM teman kamu yang diwawancara?</b>
                   <TextField
                     variant="outlined"
                     margin="dense"
                     fullWidth
                     value={this.state.intervieweeNim}
+                    error={InterviewSelector.isNimInvalidAndNotEmpty(this.state.intervieweeNim)}
+                    helperText={
+                      !InterviewSelector.isNimInvalidAndNotEmpty(this.state.intervieweeNim) ? '' : 'Format NIM salah'
+                    }
                     onChange={(event) =>
                       this.setState({
                         intervieweeNim: event.target.value as string
