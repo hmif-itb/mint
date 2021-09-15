@@ -1,5 +1,4 @@
-import React from 'react';
-import { MintReduxComponent, MintState } from '../redux/types';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
@@ -13,6 +12,7 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import { createStyles, Theme } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField/TextField';
 import Box from '@material-ui/core/Box/Box';
+import { MintReduxComponent, MintState } from '../redux/types';
 import { eventLogger } from '../helpers/eventlogger';
 
 const styles = (theme: Theme) =>
@@ -65,8 +65,9 @@ type MyProps = MintReduxComponent & OwnProps;
 class SendMailDialog extends React.Component<MyProps, MyState> {
   constructor(props: MyProps) {
     super(props);
+    const intervieweeNim = props?.state?.session?.interviewSessionData?.intervieweeNim;
     this.state = {
-      email: '',
+      email: intervieweeNim ? `${intervieweeNim}@std.stei.itb.ac.id` : '',
       sendingEmail: false
     };
   }
@@ -83,6 +84,7 @@ class SendMailDialog extends React.Component<MyProps, MyState> {
           </Typography>
           <Box mt={2}>
             <TextField
+              autoFocus
               label="Alamat Email"
               variant="outlined"
               fullWidth
